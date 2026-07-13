@@ -10,10 +10,22 @@ export default function TasksPage() {
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(true);
 
+  // Thêm vào đầu component TasksPage, cạnh state cũ
+  const [goals, setGoals] = useState([]);
+  const [goalId, setGoalId] = useState("");
+
+  const [dueDate, setDueDate] = useState("");
+
+  const [categories, setCategories] = useState([]);
+  const [categoryId, setCategoryId] = useState("");
+
+  const [selectedTagIds, setSelectedTagIds] = useState([]);
+  const [tags, setTags] = useState([]);
+
   const fetchTasks = async () => {
     const { data, error } = await supabase
       .from("tasks")
-      .select("*")
+      .select("*, goals(title)")
       .is("archived_at", null)
       .order("created_at", { ascending: false });
 
@@ -25,26 +37,72 @@ export default function TasksPage() {
     setLoading(false);
   };
 
+  const fetchGoals = async () => {
+    const { data } = await supabase
+      .from("goals")
+      .select("id, title")
+      .is("archived_at", null);
+    setGoals(data || []);
+  };
+
+  const fetchCategories = async () => {
+    const { data } = await supabase.from("categories").select("id, name");
+    setCategories(data || []);
+  };
+
+  const fetchTags = async () => {
+    const { data } = await supabase.from("tags").select("id, name");
+    setTags(data || []);
+  };
+
+  // Trong useEffect ban đầu, gọi thêm
   useEffect(() => {
-    if (user) fetchTasks();
+    if (user) {
+      fetchTasks();
+      fetchGoals();
+      fetchCategories();
+      fetchTags();
+    }
   }, [user]);
 
   const handleAddTask = async (e) => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    const { error } = await supabase.from("tasks").insert({
-      user_id: user.id,
-      title: title.trim(),
-      status: "todo",
-    });
+    const { data: newTask, error } = await supabase
+      .from("tasks")
+      .insert({
+        user_id: user.id,
+        title: title.trim(),
+        status: "todo",
+        goal_id: goalId || null,
+        category_id: categoryId || null,
+        due_date: dueDate || null,
+      })
+      .select()
+      .single();
 
     if (error) {
       console.error(error);
-    } else {
-      setTitle("");
-      fetchTasks();
+      return;
     }
+
+    if (selectedTagIds.length > 0) {
+      const rows = selectedTagIds.map((tagId) => ({
+        tag_id: tagId,
+        taggable_type: "task",
+        taggable_id: newTask.id,
+      }));
+      const { error: tagError } = await supabase.from("taggables").insert(rows);
+      if (tagError) console.error(tagError);
+    }
+
+    setTitle("");
+    setGoalId("");
+    setCategoryId("");
+    setDueDate("");
+    setSelectedTagIds([]);
+    fetchTasks();
   };
 
   const toggleStatus = async (task) => {
@@ -89,6 +147,34 @@ export default function TasksPage() {
           placeholder="Nhập task mới..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+        />
+        <select value={goalId} onChange={(e) => setGoalId(e.target.value)}>
+          <option value="">-- Không thuộc goal --</option>
+          {goals.map((g) => (
+            <option key={g.id} value={g.id}>
+              {g.title}
+            </option>
+          ))}
+        </select>
+        <select
+          multiple
+          value={selectedTagIds}
+          onChange={(e) =>
+            setSelectedTagIds(
+              Array.from(e.target.selectedOptions, (o) => o.value),
+            )
+          }
+        >
+          {tags.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.name}
+            </option>
+          ))}
+        </select>
+        <input
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
         />
         <button type="submit">Thêm</button>
       </form>
