@@ -3,6 +3,14 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
+import {
+  Calendar,
+  Trash2,
+  Plus,
+  Clock,
+  CheckSquare,
+  CalendarOff,
+} from "lucide-react";
 
 export default function SchedulesPage() {
   const { user } = useAuth();
@@ -90,87 +98,230 @@ export default function SchedulesPage() {
     else fetchSchedules();
   };
 
-  if (loading) return <p>Đang tải...</p>;
+  if (loading) {
+    return <SchedulesSkeleton />;
+  }
+
+  // Format ngày để hiển thị tiêu đề đẹp
+  const selectedDateFormatted = new Date(selectedDate).toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 
   return (
-    <div style={{ padding: 40, maxWidth: 600 }}>
-      <h1>Lịch</h1>
+    <div className="space-y-8 animate-in fade-in duration-200">
+      {/* HEADER */}
+      <div className="border-b border-slate-100 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+            <Calendar className="h-6 w-6 text-primary" />
+            Schedule
+          </h1>
+          <p className="text-slate-500 text-sm font-medium mt-1">
+            Manage your daily appointments and personal work schedules
+          </p>
+        </div>
 
-      <input
-        type="date"
-        value={selectedDate}
-        onChange={(e) => setSelectedDate(e.target.value)}
-        style={{ marginBottom: 20 }}
-      />
+        {/* BỘ CHỌN NGÀY */}
+        <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-xs">
+          <span className="text-xs font-bold text-slate-400 uppercase shrink-0">Select Date:</span>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="text-sm font-bold text-slate-700 focus:outline-hidden bg-transparent cursor-pointer"
+          />
+        </div>
+      </div>
 
-      <form
-        onSubmit={handleAdd}
-        style={{ marginBottom: 24, display: "flex", gap: 8, flexWrap: "wrap" }}
-      >
-        <input
-          type="text"
-          placeholder="Tên sự kiện..."
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <input
-          type="time"
-          value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
-        />
-        <input
-          type="time"
-          value={endTime}
-          onChange={(e) => setEndTime(e.target.value)}
-        />
-        <select value={taskId} onChange={(e) => setTaskId(e.target.value)}>
-          <option value="">-- Không gắn task --</option>
-          {tasks.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.title}
-            </option>
-          ))}
-        </select>
-        <button type="submit">Thêm</button>
-      </form>
+      {/* FORM THÊM SỰ KIỆN */}
+      <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
+        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">New Event</h3>
+        <form onSubmit={handleAdd} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="md:col-span-2 flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-slate-500">Event Name</label>
+              <input
+                type="text"
+                placeholder="Enter meeting, event, appointment name..."
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50/30"
+                required
+              />
+            </div>
 
-      <h2>Sự kiện ngày {selectedDate}</h2>
-      {schedulesForSelectedDate.length === 0 && <p>Không có sự kiện nào.</p>}
-      {schedulesForSelectedDate.map((s) => {
-        const start = new Date(s.start_time).toLocaleTimeString("vi-VN", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-        const end = new Date(s.end_time).toLocaleTimeString("vi-VN", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-        return (
-          <div
-            key={s.id}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              padding: "8px 0",
-              borderBottom: "1px solid #eee",
-            }}
-          >
-            <span>
-              <strong>
-                {start} - {end}
-              </strong>{" "}
-              · {s.title}
-              {s.tasks?.title && (
-                <small style={{ color: "#888" }}>
-                  {" "}
-                  (task: {s.tasks.title})
-                </small>
-              )}
-            </span>
-            <button onClick={() => handleDelete(s.id)}>Xoá</button>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-slate-500">Link to Task (Optional)</label>
+              <select
+                value={taskId}
+                onChange={(e) => setTaskId(e.target.value)}
+                className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-600 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              >
+                <option value="">-- No Task Link --</option>
+                {tasks.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.title}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        );
-      })}
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-slate-500">Start Time</label>
+              <div className="relative">
+                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <input
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 focus:outline-hidden bg-slate-50/30"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-slate-500">End Time</label>
+              <div className="relative">
+                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <input
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 focus:outline-hidden bg-slate-50/30"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="col-span-2 flex justify-end">
+              <button
+                type="submit"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-primary/90 active:scale-[0.98] rounded-lg transition-all shadow-xs"
+              >
+                <Plus className="h-4 w-4" />
+                Add Event
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {/* TIMELINE VIEW CHO NGÀY ĐANG CHỌN */}
+      <div className="space-y-4">
+        <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+          <span>Schedule for:</span>
+          <span className="text-primary font-bold">{selectedDateFormatted}</span>
+        </h2>
+
+        {schedulesForSelectedDate.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+            <CalendarOff className="h-8 w-8 text-slate-300 mb-3" />
+            <p className="text-sm font-bold text-slate-600">No events</p>
+            <p className="text-xs text-slate-400 mt-1">
+              No events scheduled for this day. Enjoy your free time or add a new event!
+            </p>
+          </div>
+        ) : (
+          <div className="relative border-l-2 border-slate-100 pl-6 ml-3 py-2 space-y-6">
+            {schedulesForSelectedDate.map((s) => {
+              const start = new Date(s.start_time).toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              const end = new Date(s.end_time).toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+
+              return (
+                <div key={s.id} className="relative group">
+                  {/* Dot trên dòng timeline */}
+                  <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full border-2 border-white bg-primary shadow-xs" />
+
+                  <div className="bg-white border border-slate-100 rounded-xl p-4 flex items-start sm:items-center justify-between gap-4 hover:border-slate-200 hover:shadow-xs transition-all">
+                    <div className="flex-1 min-w-0 space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-primary bg-primary/5 px-2.5 py-0.5 rounded-full border border-primary/10">
+                          {start} - {end}
+                        </span>
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-800 leading-snug break-words">
+                        {s.title}
+                      </h4>
+
+                      {/* Task Link */}
+                      {s.tasks?.title && (
+                        <div className="pt-0.5">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded leading-none max-w-[200px] truncate">
+                            <CheckSquare className="h-2.5 w-2.5 shrink-0" />
+                            {s.tasks.title}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => handleDelete(s.id)}
+                      className="p-1.5 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all shrink-0"
+                      title="Delete event"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SchedulesSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse max-w-5xl">
+      <div className="border-b border-slate-100 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="h-8 w-48 bg-slate-200 rounded-lg" />
+          <div className="h-4 w-64 bg-slate-100 rounded-md mt-2" />
+        </div>
+        <div className="h-10 w-44 bg-slate-100 rounded-lg" />
+      </div>
+
+      <div className="bg-white border border-slate-100 rounded-xl p-5 space-y-4">
+        <div className="h-5 w-24 bg-slate-200 rounded-md" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="md:col-span-2 h-10 bg-slate-100 rounded-lg" />
+          <div className="h-10 bg-slate-100 rounded-lg" />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="h-10 bg-slate-100 rounded-lg" />
+          <div className="h-10 bg-slate-100 rounded-lg" />
+          <div className="col-span-2 h-10 bg-slate-200 rounded-lg" />
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        <div className="h-5 w-56 bg-slate-200 rounded-md" />
+        <div className="border-l-2 border-slate-100 pl-6 ml-3 space-y-6">
+          {[1, 2].map((i) => (
+            <div key={i} className="relative space-y-2">
+              <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-slate-200" />
+              <div className="bg-white border border-slate-100 rounded-xl p-4 space-y-2">
+                <div className="h-5 w-20 bg-slate-100 rounded-full" />
+                <div className="h-4 w-1/3 bg-slate-200 rounded-md" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Long Dashboards
 
-## Getting Started
+Long Dashboards là một web app quản lý cá nhân được xây dựng bằng Next.js và Supabase. Ứng dụng tập trung vào các nhu cầu hằng ngày như task, goal, note, schedule, category và tag, với mục tiêu giữ giao diện gọn, rõ và dễ dùng trên cả desktop lẫn mobile.
 
-First, run the development server:
+## Tính năng chính
+
+- Dashboard tổng quan với task quá hạn, task hôm nay và lịch trong ngày.
+- Quản lý tasks, goals, notes, schedules, categories và tags qua các route riêng.
+- Xác thực người dùng bằng Supabase Auth thông qua `AuthProvider`.
+- UI đang được xây theo hướng tối giản, hiện đại và ưu tiên tốc độ đọc.
+
+## Công nghệ sử dụng
+
+- Next.js App Router
+- React 19
+- JavaScript, không dùng TypeScript
+- Tailwind CSS
+- Supabase
+- shadcn/ui
+- lucide-react
+
+## Cấu trúc chính
+
+- `src/app/page.js`: Dashboard
+- `src/app/login/page.js`: Đăng nhập
+- `src/app/tasks/page.js`: Tasks
+- `src/app/goals/page.js`: Goals
+- `src/app/notes/page.js`: Notes
+- `src/app/schedules/page.js`: Schedules
+- `src/app/categories/page.js`: Categories
+- `src/app/tags/page.js`: Tags
+- `src/app/layout.js`: Root layout, bọc `AuthProvider`
+- `src/components/layout-wrapper.js`: Wrapper layout dùng chung
+- `src/lib/supabase.js`: Khởi tạo Supabase client
+- `src/lib/auth-context.js`: Auth context
+
+## Yêu cầu môi trường
+
+Node.js 18+ và một dự án Supabase đã cấu hình sẵn.
+
+Biến môi trường thường dùng:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+## Cài đặt và chạy local
+
+```bash
+npm install
+npm run dev
+```
+
+Sau khi chạy, mở `http://localhost:3000`.
+
+## Scripts
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Ghi chú phát triển
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- App dùng `src/` làm gốc cho mã nguồn.
+- Logic gọi Supabase đang nằm trực tiếp trong các page component.
+- Khi chỉnh UI, nên giữ nguyên route, schema và luồng auth hiện có.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Hướng phát triển tiếp theo
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Thêm layout điều hướng chung cho desktop và mobile.
+- Chuẩn hóa empty state, loading state và progress UI.
+- Cải thiện responsive để dùng tốt trên điện thoại.

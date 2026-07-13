@@ -3,6 +3,15 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
+import {
+  FileText,
+  Trash2,
+  Plus,
+  Inbox,
+  CheckSquare,
+  Target,
+  Calendar,
+} from "lucide-react";
 
 export default function NotesPage() {
   const { user } = useAuth();
@@ -98,88 +107,224 @@ export default function NotesPage() {
     return null;
   };
 
-  if (loading) return <p>Đang tải...</p>;
+  if (loading) {
+    return <NotesSkeleton />;
+  }
 
   return (
-    <div style={{ padding: 40, maxWidth: 600 }}>
-      <h1>Ghi chú</h1>
-
-      <form onSubmit={handleAddNote} style={{ marginBottom: 24 }}>
-        <textarea
-          placeholder="Viết ghi chú..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows={3}
-          style={{ width: "100%", marginBottom: 8 }}
-        />
-        <div style={{ display: "flex", gap: 8 }}>
-          <select
-            value={linkType}
-            onChange={(e) => {
-              setLinkType(e.target.value);
-              setLinkId("");
-            }}
-          >
-            <option value="">-- Không liên kết --</option>
-            <option value="task">Liên kết Task</option>
-            <option value="goal">Liên kết Goal</option>
-          </select>
-
-          {linkType === "task" && (
-            <select value={linkId} onChange={(e) => setLinkId(e.target.value)}>
-              <option value="">-- Chọn task --</option>
-              {tasks.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.title}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {linkType === "goal" && (
-            <select value={linkId} onChange={(e) => setLinkId(e.target.value)}>
-              <option value="">-- Chọn goal --</option>
-              {goals.map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.title}
-                </option>
-              ))}
-            </select>
-          )}
-
-          <button type="submit">Lưu note</button>
+    <div className="space-y-8 animate-in fade-in duration-200">
+      {/* HEADER */}
+      <div className="border-b border-slate-100 pb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+            <FileText className="h-6 w-6 text-primary" />
+            Notes
+          </h1>
+          <p className="text-slate-500 text-sm font-medium mt-1">
+            Capture thoughts, store simple wikis, and link them to tasks or goals
+          </p>
         </div>
-      </form>
+        <span className="bg-primary/5 text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/10">
+          Total: {notes.length}
+        </span>
+      </div>
 
-      {notes.map((note) => (
-        <div
-          key={note.id}
-          style={{ padding: "10px 0", borderBottom: "1px solid #eee" }}
-        >
-          <p style={{ margin: 0 }}>{note.content}</p>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: 4,
-            }}
-          >
-            <small style={{ color: "#888" }}>
-              {new Date(note.created_at).toLocaleString("vi-VN")}
-              {note.note_links?.map((link, i) => (
-                <span key={i}>
-                  {" "}
-                  · {link.related_type === "task" ? "Task" : "Goal"}:{" "}
-                  {getLinkedLabel(link)}
-                </span>
-              ))}
-            </small>
-            <button onClick={() => handleDelete(note.id)}>Xoá</button>
+      {/* FORM VIẾT NOTE MỚI */}
+      <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
+        <h3 className="text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">New Note</h3>
+        <form onSubmit={handleAddNote} className="space-y-4">
+          <textarea
+            placeholder="Write your note here..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            rows={4}
+            className="w-full px-4 py-3 rounded-lg border border-slate-200 text-sm font-medium placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50/30 resize-y"
+            required
+          />
+
+          <div className="flex flex-col md:flex-row gap-3 items-end md:items-center justify-between">
+            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+              {/* LINK TYPE */}
+              <div className="flex flex-col gap-1 w-full sm:w-44">
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Link to</label>
+                <select
+                  value={linkType}
+                  onChange={(e) => {
+                    setLinkType(e.target.value);
+                    setLinkId("");
+                  }}
+                  className="px-3 py-2 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 focus:outline-hidden"
+                >
+                  <option value="">-- No Link --</option>
+                  <option value="task">Link to Task</option>
+                  <option value="goal">Link to Goal</option>
+                </select>
+              </div>
+
+              {/* LINK ID FOR TASK */}
+              {linkType === "task" && (
+                <div className="flex flex-col gap-1 w-full sm:w-60">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">Select Task</label>
+                  <select
+                    value={linkId}
+                    onChange={(e) => setLinkId(e.target.value)}
+                    className="px-3 py-2 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 focus:outline-hidden truncate"
+                  >
+                    <option value="">-- Select Task --</option>
+                    {tasks.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* LINK ID FOR GOAL */}
+              {linkType === "goal" && (
+                <div className="flex flex-col gap-1 w-full sm:w-60">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">Select Goal</label>
+                  <select
+                    value={linkId}
+                    onChange={(e) => setLinkId(e.target.value)}
+                    className="px-3 py-2 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 focus:outline-hidden truncate"
+                  >
+                    <option value="">-- Select Goal --</option>
+                    {goals.map((g) => (
+                      <option key={g.id} value={g.id}>
+                        {g.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-primary/90 active:scale-[0.98] rounded-lg transition-all shadow-xs shrink-0"
+            >
+              <Plus className="h-4 w-4" />
+              Save Note
+            </button>
           </div>
-        </div>
-      ))}
+        </form>
+      </div>
 
-      {notes.length === 0 && <p>Chưa có ghi chú nào.</p>}
+      {/* DANH SÁCH NOTES ( dạng board/grid ) */}
+      <div>
+        {notes.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+            <Inbox className="h-8 w-8 text-slate-300 mb-3" />
+            <p className="text-sm font-bold text-slate-600">No notes yet</p>
+            <p className="text-xs text-slate-400 mt-1">
+              Start capturing notes, ideas or snippets!
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {notes.map((note) => {
+              const formattedDate = new Date(note.created_at).toLocaleString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              });
+
+              return (
+                <div
+                  key={note.id}
+                  className="group bg-white border border-slate-100 rounded-xl p-5 hover:border-slate-200 hover:shadow-xs transition-all flex flex-col justify-between gap-4"
+                >
+                  <p className="text-sm font-medium text-slate-700 leading-relaxed whitespace-pre-wrap break-words">
+                    {note.content}
+                  </p>
+
+                  <div className="border-t border-slate-50 pt-3 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-400">
+                        <Calendar className="h-3 w-3" />
+                        {formattedDate}
+                      </span>
+
+                      {/* Note Links */}
+                      {note.note_links?.map((link, i) => {
+                        const isTask = link.related_type === "task";
+                        const label = getLinkedLabel(link);
+                        if (!label) return null;
+
+                        return (
+                          <span
+                            key={i}
+                            className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded ${
+                              isTask ? "bg-blue-50 text-blue-600" : "bg-amber-50 text-amber-600"
+                            } max-w-[150px] truncate`}
+                            title={`${isTask ? "Task" : "Goal"}: ${label}`}
+                          >
+                            {isTask ? (
+                              <CheckSquare className="h-2.5 w-2.5 shrink-0" />
+                            ) : (
+                              <Target className="h-2.5 w-2.5 shrink-0" />
+                            )}
+                            {label}
+                          </span>
+                        );
+                      })}
+                    </div>
+
+                    <button
+                      onClick={() => handleDelete(note.id)}
+                      className="p-1 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all shrink-0"
+                      title="Delete note"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function NotesSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse max-w-5xl">
+      <div className="border-b border-slate-100 pb-6 flex items-center justify-between">
+        <div>
+          <div className="h-8 w-48 bg-slate-200 rounded-lg" />
+          <div className="h-4 w-64 bg-slate-100 rounded-md mt-2" />
+        </div>
+        <div className="h-6 w-20 bg-slate-100 rounded-full" />
+      </div>
+
+      <div className="bg-white border border-slate-100 rounded-xl p-5 space-y-4">
+        <div className="h-5 w-24 bg-slate-200 rounded-md" />
+        <div className="h-24 bg-slate-100 rounded-lg" />
+        <div className="flex justify-between items-center">
+          <div className="h-8 w-40 bg-slate-100 rounded-lg" />
+          <div className="h-8 w-28 bg-slate-200 rounded-lg" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="bg-white border border-slate-100 rounded-xl p-5 space-y-4">
+            <div className="space-y-2">
+              <div className="h-4 w-full bg-slate-200 rounded-md" />
+              <div className="h-4 w-5/6 bg-slate-200 rounded-md" />
+            </div>
+            <div className="border-t border-slate-50 pt-3 flex justify-between items-center">
+              <div className="h-3.5 w-24 bg-slate-100 rounded-md" />
+              <div className="h-5 w-5 bg-slate-100 rounded-md" />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
