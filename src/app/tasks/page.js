@@ -13,6 +13,8 @@ import {
   Folder,
   Plus,
   Inbox,
+  Pencil,
+  X,
 } from "lucide-react";
 
 export default function TasksPage() {
@@ -32,6 +34,8 @@ export default function TasksPage() {
 
   const [selectedTagIds, setSelectedTagIds] = useState([]);
   const [tags, setTags] = useState([]);
+
+  const [editingId, setEditingId] = useState(null); // 👈 mới
 
   const fetchTasks = async () => {
     const { data, error } = await supabase
@@ -78,44 +82,109 @@ export default function TasksPage() {
     }
   }, [user]);
 
-  const handleAddTask = async (e) => {
-    e.preventDefault();
-    if (!title.trim()) return;
-
-    const { data: newTask, error } = await supabase
-      .from("tasks")
-      .insert({
-        user_id: user.id,
-        title: title.trim(),
-        status: "todo",
-        goal_id: goalId || null,
-        category_id: categoryId || null,
-        due_date: dueDate || null,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    if (selectedTagIds.length > 0) {
-      const rows = selectedTagIds.map((tagId) => ({
-        tag_id: tagId,
-        taggable_type: "task",
-        taggable_id: newTask.id,
-      }));
-      const { error: tagError } = await supabase.from("taggables").insert(rows);
-      if (tagError) console.error(tagError);
-    }
-
+  const resetForm = () => {
+    setEditingId(null);
     setTitle("");
     setGoalId("");
     setCategoryId("");
     setDueDate("");
     setSelectedTagIds([]);
-    fetchTasks();
+  };
+
+  const startEdit = async (task) => {
+    setEditingId(task.id);
+    setTitle(task.title);
+    setGoalId(task.goal_id || "");
+    setCategoryId(task.category_id || "");
+    setDueDate(task.due_date || "");
+
+    // Lấy các tag hiện tại của task để tick sẵn
+    const { data: taggableRows, error } = await supabase
+      .from("taggables")
+      .select("tag_id")
+      .eq("taggable_type", "task")
+      .eq("taggable_id", task.id);
+
+    if (error) console.error(error);
+    setSelectedTagIds((taggableRows || []).map((r) => r.tag_id));
+  };
+
+  const syncTaskTags = async (taskId) => {
+    const { error: delErr } = await supabase
+      .from("taggables")
+      .delete()
+      .eq("taggable_type", "task")
+      .eq("taggable_id", taskId);
+    if (delErr) console.error(delErr);
+
+    if (selectedTagIds.length > 0) {
+      const rows = selectedTagIds.map((tagId) => ({
+        tag_id: tagId,
+        taggable_type: "task",
+        taggable_id: taskId,
+      }));
+      const { error: tagError } = await supabase.from("taggables").insert(rows);
+      if (tagError) console.error(tagError);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!title.trim()) return;
+
+    if (editingId) {
+      const { error } = await supabase
+        .from("tasks")
+        .update({
+          title: title.trim(),
+          goal_id: goalId || null,
+          category_id: categoryId || null,
+          due_date: dueDate || null,
+        })
+        .eq("id", editingId);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      await syncTaskTags(editingId);
+      resetForm();
+      fetchTasks();
+    } else {
+      const { data: newTask, error } = await supabase
+        .from("tasks")
+        .insert({
+          user_id: user.id,
+          title: title.trim(),
+          status: "todo",
+          goal_id: goalId || null,
+          category_id: categoryId || null,
+          due_date: dueDate || null,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      if (selectedTagIds.length > 0) {
+        const rows = selectedTagIds.map((tagId) => ({
+          tag_id: tagId,
+          taggable_type: "task",
+          taggable_id: newTask.id,
+        }));
+        const { error: tagError } = await supabase
+          .from("taggables")
+          .insert(rows);
+        if (tagError) console.error(tagError);
+      }
+
+      resetForm();
+      fetchTasks();
+    }
   };
 
   const toggleStatus = async (task) => {
@@ -144,6 +213,7 @@ export default function TasksPage() {
     if (error) {
       console.error(error);
     } else {
+      if (editingId === taskId) resetForm();
       fetchTasks();
     }
   };
@@ -180,12 +250,24 @@ export default function TasksPage() {
         </span>
       </div>
 
-      {/* FORM NHẬP TASK MỚI */}
+      {/* FORM THÊM/SỬA TASK */}
       <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
-        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">
-          New Task
-        </h3>
-        <form onSubmit={handleAddTask} className="space-y-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+            {editingId ? "Edit Task" : "New Task"}
+          </h3>
+          {editingId && (
+            <button
+              type="button"
+              onClick={resetForm}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-slate-600"
+            >
+              <X className="h-3.5 w-3.5" />
+              Cancel
+            </button>
+          )}
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col md:flex-row gap-3">
             <input
               type="text"
@@ -286,8 +368,17 @@ export default function TasksPage() {
               type="submit"
               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-primary/90 active:scale-[0.98] rounded-lg transition-all shadow-xs"
             >
-              <Plus className="h-4 w-4" />
-              Add Task
+              {editingId ? (
+                <>
+                  <Pencil className="h-4 w-4" />
+                  Update Task
+                </>
+              ) : (
+                <>
+                  <Plus className="h-4 w-4" />
+                  Add Task
+                </>
+              )}
             </button>
           </div>
         </form>
@@ -318,7 +409,9 @@ export default function TasksPage() {
               return (
                 <div
                   key={task.id}
-                  className="flex items-start gap-4 p-4 hover:bg-slate-50/50 transition-colors group"
+                  className={`flex items-start gap-4 p-4 hover:bg-slate-50/50 transition-colors group ${
+                    editingId === task.id ? "bg-primary/5" : ""
+                  }`}
                 >
                   {/* CHECKBOX */}
                   <button
@@ -390,14 +483,22 @@ export default function TasksPage() {
                     </div>
                   </div>
 
-                  {/* ACTIONS */}
-                  <button
-                    onClick={() => softDelete(task.id)}
-                    className="p-1 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 opacity-0 group-hover:opacity-100 md:group-hover:opacity-100 active:opacity-100 transition-all shrink-0"
-                    title="Delete task"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 md:group-hover:opacity-100 active:opacity-100 transition-all shrink-0">
+                    <button
+                      onClick={() => startEdit(task)}
+                      className="p-1 rounded-lg text-slate-300 hover:text-primary hover:bg-primary/5"
+                      title="Edit task"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => softDelete(task.id)}
+                      className="p-1 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50"
+                      title="Delete task"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
               );
             })}

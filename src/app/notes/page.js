@@ -12,24 +12,27 @@ import {
   CheckSquare,
   Target,
   Calendar,
+  Pencil,
+  X,
 } from "lucide-react";
 
 export default function NotesPage() {
   const { user } = useAuth();
   const [notes, setNotes] = useState([]);
   const [content, setContent] = useState("");
-  const [linkType, setLinkType] = useState(""); // '' | 'task' | 'goal'
+  const [linkType, setLinkType] = useState("");
   const [linkId, setLinkId] = useState("");
   const [tasks, setTasks] = useState([]);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState(null); // 👈 mới
 
   const fetchNotes = async () => {
     // Lấy note kèm note_links để biết note nào gắn với task/goal nào
     const { data, error } = await supabase
       .from("notes")
       .select("*, note_links(related_type, related_id)")
-      .is("deleted_at", null) // 👈 thêm
+      .is("deleted_at", null)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -60,45 +63,107 @@ export default function NotesPage() {
     }
   }, [user]);
 
-  const handleAddNote = async (e) => {
-    e.preventDefault();
-    if (!content.trim()) return;
+  const resetForm = () => {
+    setEditingId(null);
+    setContent("");
+    setLinkType("");
+    setLinkId("");
+  };
 
-    // Bước 1: tạo note
-    const { data: newNote, error } = await supabase
-      .from("notes")
-      .insert({ user_id: user.id, note_type: "note", content: content.trim() })
-      .select()
-      .single();
-
-    if (error) {
-      console.error(error);
-      return;
+  const startEdit = (note) => {
+    setEditingId(note.id);
+    setContent(note.content);
+    const link = note.note_links?.[0];
+    if (link) {
+      setLinkType(link.related_type);
+      setLinkId(link.related_id);
+    } else {
+      setLinkType("");
+      setLinkId("");
     }
+  };
 
-    // Bước 2: nếu có chọn liên kết, tạo dòng trong note_links
+  const applyLink = async (noteId) => {
+    // Xóa link cũ rồi gắn lại link mới (nếu có) — đơn giản & an toàn
+    const { error: delErr } = await supabase
+      .from("note_links")
+      .delete()
+      .eq("note_id", noteId);
+    if (delErr) console.error(delErr);
+
     if (linkType && linkId) {
       const { error: linkError } = await supabase.from("note_links").insert({
-        note_id: newNote.id,
+        note_id: noteId,
         related_type: linkType,
         related_id: linkId,
       });
       if (linkError) console.error(linkError);
     }
+  };
 
-    setContent("");
-    setLinkType("");
-    setLinkId("");
-    fetchNotes();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!content.trim()) return;
+
+    if (editingId) {
+      const { error } = await supabase
+        .from("notes")
+        .update({
+          content: content.trim(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", editingId);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      await applyLink(editingId);
+      resetForm();
+      fetchNotes();
+    } else {
+      const { data: newNote, error } = await supabase
+        .from("notes")
+        .insert({
+          user_id: user.id,
+          note_type: "note",
+          content: content.trim(),
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      if (linkType && linkId) {
+        const { error: linkError } = await supabase.from("note_links").insert({
+          note_id: newNote.id,
+          related_type: linkType,
+          related_id: linkId,
+        });
+        if (linkError) console.error(linkError);
+      }
+
+      setContent("");
+      setLinkType("");
+      setLinkId("");
+      fetchNotes();
+    }
   };
 
   const handleDelete = async (noteId) => {
     const { error } = await supabase
       .from("notes")
-      .update({ deleted_at: new Date().toISOString() }) // 👈 đổi
+      .update({ deleted_at: new Date().toISOString() })
       .eq("id", noteId);
     if (error) console.error(error);
-    else fetchNotes();
+    else {
+      if (editingId === noteId) resetForm();
+      fetchNotes();
+    }
   };
 
   // Tìm tên hiển thị của item được liên kết (task hoặc goal)
@@ -135,12 +200,24 @@ export default function NotesPage() {
         </span>
       </div>
 
-      {/* FORM VIẾT NOTE MỚI */}
+      {/* FORM THÊM/SỬA NOTE */}
       <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
-        <h3 className="text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">
-          New Note
-        </h3>
-        <form onSubmit={handleAddNote} className="space-y-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+            {editingId ? "Edit Note" : "New Note"}
+          </h3>
+          {editingId && (
+            <button
+              type="button"
+              onClick={resetForm}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-slate-600"
+            >
+              <X className="h-3.5 w-3.5" />
+              Cancel
+            </button>
+          )}
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <textarea
             placeholder="Write your note here..."
             value={content}
@@ -218,14 +295,23 @@ export default function NotesPage() {
               type="submit"
               className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-primary/90 active:scale-[0.98] rounded-lg transition-all shadow-xs shrink-0"
             >
-              <Plus className="h-4 w-4" />
-              Save Note
+              {editingId ? (
+                <>
+                  <Pencil className="h-4 w-4" />
+                  Update Note
+                </>
+              ) : (
+                <>
+                  <Plus className="h-4 w-4" />
+                  Save Note
+                </>
+              )}
             </button>
           </div>
         </form>
       </div>
 
-      {/* DANH SÁCH NOTES ( dạng board/grid ) */}
+      {/* DANH SÁCH NOTES */}
       <div>
         {notes.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
@@ -252,7 +338,11 @@ export default function NotesPage() {
               return (
                 <div
                   key={note.id}
-                  className="group bg-white border border-slate-100 rounded-xl p-5 hover:border-slate-200 hover:shadow-xs transition-all flex flex-col justify-between gap-4"
+                  className={`group bg-white border rounded-xl p-5 hover:border-slate-200 hover:shadow-xs transition-all flex flex-col justify-between gap-4 ${
+                    editingId === note.id
+                      ? "border-primary/40 ring-2 ring-primary/10"
+                      : "border-slate-100"
+                  }`}
                 >
                   <p className="text-sm font-medium text-slate-700 leading-relaxed whitespace-pre-wrap break-words">
                     {note.content}
@@ -292,13 +382,22 @@ export default function NotesPage() {
                       })}
                     </div>
 
-                    <button
-                      onClick={() => handleDelete(note.id)}
-                      className="p-1 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all shrink-0"
-                      title="Delete note"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    <div className="flex items-center gap-1 shrink-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all">
+                      <button
+                        onClick={() => startEdit(note)}
+                        className="p-1 rounded-lg text-slate-300 hover:text-primary hover:bg-primary/5"
+                        title="Edit note"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(note.id)}
+                        className="p-1 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50"
+                        title="Delete note"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
