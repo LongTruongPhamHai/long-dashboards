@@ -1,4 +1,4 @@
-// src\app\schedules\page.js
+// src\app\notes\page.js
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,6 +14,8 @@ import {
   Calendar,
   Pencil,
   X,
+  ArrowUpDown,
+  Search,
 } from "lucide-react";
 
 export default function NotesPage() {
@@ -26,6 +28,8 @@ export default function NotesPage() {
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState(null); // 👈 mới
+  const [sortBy, setSortBy] = useState("created_desc"); // 👈 mới
+  const [searchQuery, setSearchQuery] = useState(""); // 👈 mới
 
   const fetchNotes = async () => {
     // Lấy note kèm note_links để biết note nào gắn với task/goal nào
@@ -177,6 +181,32 @@ export default function NotesPage() {
     return null;
   };
 
+  // Lọc theo nội dung note hoặc tên task/goal đã liên kết, không phân biệt hoa/thường
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const filteredNotes = notes.filter((note) => {
+    if (!normalizedQuery) return true;
+    if (note.content.toLowerCase().includes(normalizedQuery)) return true;
+    return (note.note_links || []).some((link) => {
+      const label = getLinkedLabel(link);
+      return label && label.toLowerCase().includes(normalizedQuery);
+    });
+  });
+
+  // Sắp xếp danh sách hiển thị theo lựa chọn sort, không đổi state gốc
+  const sortedNotes = [...filteredNotes].sort((a, b) => {
+    switch (sortBy) {
+      case "created_asc":
+        return new Date(a.created_at) - new Date(b.created_at);
+      case "updated_desc":
+        return (
+          new Date(b.updated_at || b.created_at) -
+          new Date(a.updated_at || a.created_at)
+        );
+      default: // created_desc
+        return new Date(b.created_at) - new Date(a.created_at);
+    }
+  });
+
   if (loading) {
     return <NotesSkeleton />;
   }
@@ -312,7 +342,34 @@ export default function NotesPage() {
       </div>
 
       {/* DANH SÁCH NOTES */}
-      <div>
+      <div className="space-y-3">
+        {notes.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="relative flex-1 sm:max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search notes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 placeholder:text-slate-400 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+              />
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              >
+                <option value="created_desc">Newest first</option>
+                <option value="created_asc">Oldest first</option>
+                <option value="updated_desc">Recently updated</option>
+              </select>
+            </div>
+          </div>
+        )}
+
         {notes.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
             <Inbox className="h-8 w-8 text-slate-300 mb-3" />
@@ -321,9 +378,19 @@ export default function NotesPage() {
               Start capturing notes, ideas or snippets!
             </p>
           </div>
+        ) : sortedNotes.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+            <Search className="h-8 w-8 text-slate-300 mb-3" />
+            <p className="text-sm font-bold text-slate-600">
+              No notes match &ldquo;{searchQuery}&rdquo;
+            </p>
+            <p className="text-xs text-slate-400 mt-1">
+              Try a different search term.
+            </p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {notes.map((note) => {
+            {sortedNotes.map((note) => {
               const formattedDate = new Date(note.created_at).toLocaleString(
                 "en-US",
                 {

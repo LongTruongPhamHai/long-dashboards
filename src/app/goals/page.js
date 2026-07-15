@@ -12,6 +12,8 @@ import {
   Milestone,
   Pencil,
   X,
+  ArrowUpDown,
+  Search,
 } from "lucide-react";
 
 export default function GoalsPage() {
@@ -22,6 +24,8 @@ export default function GoalsPage() {
   const [loading, setLoading] = useState(true);
   const [taskCounts, setTaskCounts] = useState({});
   const [editingId, setEditingId] = useState(null); // 👈 mới
+  const [sortBy, setSortBy] = useState("created_asc"); // 👈 mới
+  const [searchQuery, setSearchQuery] = useState(""); // 👈 mới
 
   const fetchGoals = async () => {
     const { data, error } = await supabase
@@ -145,10 +149,57 @@ export default function GoalsPage() {
     }
   };
 
+  // Tính % tiến độ của 1 goal dựa trên taskCounts, dùng để sort theo progress
+  const getProgressPercent = (goalId) => {
+    const c = taskCounts[goalId];
+    return c && c.total > 0 ? c.done / c.total : 0;
+  };
+
+  // Sắp xếp 1 danh sách goal theo lựa chọn sort hiện tại (dùng chung cho cả root và children)
+  const sortGoalsList = (list) => {
+    const sorted = [...list];
+    sorted.sort((a, b) => {
+      switch (sortBy) {
+        case "title_asc":
+          return a.title.localeCompare(b.title);
+        case "created_desc":
+          return new Date(b.created_at) - new Date(a.created_at);
+        case "progress_desc":
+          return getProgressPercent(b.id) - getProgressPercent(a.id);
+        default: // created_asc
+          return new Date(a.created_at) - new Date(b.created_at);
+      }
+    });
+    return sorted;
+  };
+
+  // Tìm kiếm theo tiêu đề, không phân biệt hoa/thường
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const goalMatchesSearch = (goal) =>
+    goal.title.toLowerCase().includes(normalizedQuery);
+
+  // Một goal được hiển thị nếu chính nó khớp hoặc có ít nhất 1 goal con (ở bất kỳ cấp nào) khớp,
+  // để giữ nguyên ngữ cảnh phân cấp cha-con khi lọc
+  const hasMatchingDescendant = (goalId) => {
+    const children = goals.filter((g) => g.parent_goal_id === goalId);
+    return children.some(
+      (child) => goalMatchesSearch(child) || hasMatchingDescendant(child.id),
+    );
+  };
+
+  const isGoalVisible = (goal) =>
+    !normalizedQuery ||
+    goalMatchesSearch(goal) ||
+    hasMatchingDescendant(goal.id);
+
   // Dựng cây phân cấp: goal gốc (không có parent) chứa danh sách con
-  const rootGoals = goals.filter((g) => !g.parent_goal_id);
+  const rootGoals = sortGoalsList(
+    goals.filter((g) => !g.parent_goal_id && isGoalVisible(g)),
+  );
   const getChildren = (parentId) =>
-    goals.filter((g) => g.parent_goal_id === parentId);
+    sortGoalsList(
+      goals.filter((g) => g.parent_goal_id === parentId && isGoalVisible(g)),
+    );
 
   const renderGoal = (goal, depth = 0) => {
     const c = taskCounts[goal.id];
@@ -336,12 +387,50 @@ export default function GoalsPage() {
 
       {/* DANH SÁCH GOALS CÂY PHÂN CẤP */}
       <div className="space-y-6">
+        {goals.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="relative flex-1 sm:max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search goals..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 placeholder:text-slate-400 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+              />
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              >
+                <option value="created_asc">Created (Oldest first)</option>
+                <option value="created_desc">Created (Newest first)</option>
+                <option value="title_asc">Title (A-Z)</option>
+                <option value="progress_desc">Progress (Highest first)</option>
+              </select>
+            </div>
+          </div>
+        )}
+
         {goals.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
             <Inbox className="h-8 w-8 text-slate-300 mb-3" />
             <p className="text-sm font-bold text-slate-600">No goals yet</p>
             <p className="text-xs text-slate-400 mt-1">
               Set your first milestone to start planning effectively!
+            </p>
+          </div>
+        ) : rootGoals.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+            <Search className="h-8 w-8 text-slate-300 mb-3" />
+            <p className="text-sm font-bold text-slate-600">
+              No goals match &ldquo;{searchQuery}&rdquo;
+            </p>
+            <p className="text-xs text-slate-400 mt-1">
+              Try a different search term.
             </p>
           </div>
         ) : (

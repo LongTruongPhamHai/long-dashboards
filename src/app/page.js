@@ -17,6 +17,7 @@ import {
   FileText,
   CheckSquare,
   Target,
+  Plus,
 } from "lucide-react";
 
 // Số ngày tới được tính là "sắp đến hạn"
@@ -230,8 +231,8 @@ export default function Home() {
             href="/tasks"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-primary bg-primary/5 hover:bg-primary/10 rounded-lg transition-colors"
           >
-            Manage tasks
-            <ArrowRight className="h-3 w-3" />
+            <Plus className="h-3.5 w-3.5" />
+            Add task
           </Link>
         </div>
       </div>

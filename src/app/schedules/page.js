@@ -13,6 +13,8 @@ import {
   CalendarOff,
   Pencil,
   X,
+  ArrowUpDown,
+  Search,
 } from "lucide-react";
 
 export default function SchedulesPage() {
@@ -28,6 +30,8 @@ export default function SchedulesPage() {
   );
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState(null); // 👈 mới
+  const [sortDir, setSortDir] = useState("asc"); // 👈 mới
+  const [searchQuery, setSearchQuery] = useState(""); // 👈 mới
 
   const fetchSchedules = async () => {
     const { data, error } = await supabase
@@ -137,6 +141,20 @@ export default function SchedulesPage() {
   // Lọc các schedule thuộc đúng ngày đang chọn
   const schedulesForSelectedDate = schedules.filter((s) => {
     return toLocalDateString(s.start_time) === selectedDate;
+  });
+
+  // Lọc theo tên sự kiện hoặc tên task liên kết, không phân biệt hoa/thường
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const filteredSchedules = schedulesForSelectedDate.filter((s) => {
+    if (!normalizedQuery) return true;
+    if (s.title.toLowerCase().includes(normalizedQuery)) return true;
+    return s.tasks?.title?.toLowerCase().includes(normalizedQuery);
+  });
+
+  // Sắp xếp theo giờ bắt đầu, chiều tăng/giảm theo lựa chọn sort
+  const sortedSchedules = [...filteredSchedules].sort((a, b) => {
+    const diff = new Date(a.start_time) - new Date(b.start_time);
+    return sortDir === "asc" ? diff : -diff;
   });
 
   const handleDelete = async (id) => {
@@ -303,12 +321,38 @@ export default function SchedulesPage() {
 
       {/* TIMELINE VIEW CHO NGÀY ĐANG CHỌN */}
       <div className="space-y-4">
-        <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-          <span>Schedule for:</span>
-          <span className="text-primary font-bold">
-            {selectedDateFormatted}
-          </span>
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+            <span>Schedule for:</span>
+            <span className="text-primary font-bold">
+              {selectedDateFormatted}
+            </span>
+          </h2>
+
+          {schedulesForSelectedDate.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Search events..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 placeholder:text-slate-400 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white w-40 sm:w-48"
+                />
+              </div>
+              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <select
+                value={sortDir}
+                onChange={(e) => setSortDir(e.target.value)}
+                className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              >
+                <option value="asc">Earliest first</option>
+                <option value="desc">Latest first</option>
+              </select>
+            </div>
+          )}
+        </div>
 
         {schedulesForSelectedDate.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
@@ -319,9 +363,19 @@ export default function SchedulesPage() {
               new event!
             </p>
           </div>
+        ) : sortedSchedules.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+            <Search className="h-8 w-8 text-slate-300 mb-3" />
+            <p className="text-sm font-bold text-slate-600">
+              No events match &ldquo;{searchQuery}&rdquo;
+            </p>
+            <p className="text-xs text-slate-400 mt-1">
+              Try a different search term.
+            </p>
+          </div>
         ) : (
           <div className="relative border-l-2 border-slate-100 pl-6 ml-3 py-2 space-y-6">
-            {schedulesForSelectedDate.map((s) => {
+            {sortedSchedules.map((s) => {
               const start = new Date(s.start_time).toLocaleTimeString("en-US", {
                 hour: "2-digit",
                 minute: "2-digit",

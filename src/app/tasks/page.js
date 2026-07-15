@@ -15,6 +15,8 @@ import {
   Inbox,
   Pencil,
   X,
+  ArrowUpDown,
+  Search,
 } from "lucide-react";
 
 export default function TasksPage() {
@@ -36,6 +38,8 @@ export default function TasksPage() {
   const [tags, setTags] = useState([]);
 
   const [editingId, setEditingId] = useState(null); // 👈 mới
+  const [sortBy, setSortBy] = useState("created_desc"); // 👈 mới
+  const [searchQuery, setSearchQuery] = useState(""); // 👈 mới
 
   const fetchTasks = async () => {
     const { data, error } = await supabase
@@ -226,6 +230,41 @@ export default function TasksPage() {
     }
   };
 
+  // Lọc theo tiêu đề task, tên goal hoặc category liên kết, không phân biệt hoa/thường
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const filteredTasks = tasks.filter((task) => {
+    if (!normalizedQuery) return true;
+    if (task.title.toLowerCase().includes(normalizedQuery)) return true;
+    if (task.goals?.title?.toLowerCase().includes(normalizedQuery)) return true;
+    const matchedCategory = categories.find((c) => c.id === task.category_id);
+    return matchedCategory?.name?.toLowerCase().includes(normalizedQuery);
+  });
+
+  // Sắp xếp danh sách hiển thị theo lựa chọn sort, không đổi state gốc.
+  // Task không có due_date luôn được xếp xuống cuối khi sort theo hạn chót.
+  const sortedTasks = [...filteredTasks].sort((a, b) => {
+    switch (sortBy) {
+      case "due_asc": {
+        if (!a.due_date && !b.due_date) return 0;
+        if (!a.due_date) return 1;
+        if (!b.due_date) return -1;
+        return a.due_date.localeCompare(b.due_date);
+      }
+      case "due_desc": {
+        if (!a.due_date && !b.due_date) return 0;
+        if (!a.due_date) return 1;
+        if (!b.due_date) return -1;
+        return b.due_date.localeCompare(a.due_date);
+      }
+      case "title_asc":
+        return a.title.localeCompare(b.title);
+      case "status":
+        return (a.status === "done" ? 1 : 0) - (b.status === "done" ? 1 : 0);
+      default: // created_desc
+        return new Date(b.created_at) - new Date(a.created_at);
+    }
+  });
+
   if (loading) {
     return <TasksSkeleton />;
   }
@@ -386,6 +425,35 @@ export default function TasksPage() {
 
       {/* DANH SÁCH TASKS */}
       <div className="space-y-4">
+        {tasks.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="relative flex-1 sm:max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search tasks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 placeholder:text-slate-400 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+              />
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              >
+                <option value="created_desc">Newest created</option>
+                <option value="due_asc">Due date (soonest)</option>
+                <option value="due_desc">Due date (latest)</option>
+                <option value="title_asc">Title (A-Z)</option>
+                <option value="status">Status (incomplete first)</option>
+              </select>
+            </div>
+          </div>
+        )}
+
         {tasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
             <Inbox className="h-8 w-8 text-slate-300 mb-3" />
@@ -394,9 +462,19 @@ export default function TasksPage() {
               No tasks yet. Create your first task using the form above!
             </p>
           </div>
+        ) : sortedTasks.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+            <Search className="h-8 w-8 text-slate-300 mb-3" />
+            <p className="text-sm font-bold text-slate-600">
+              No tasks match &ldquo;{searchQuery}&rdquo;
+            </p>
+            <p className="text-xs text-slate-400 mt-1">
+              Try a different search term.
+            </p>
+          </div>
         ) : (
           <div className="bg-white border border-slate-100 rounded-xl divide-y divide-slate-50 overflow-hidden shadow-xs">
-            {tasks.map((task) => {
+            {sortedTasks.map((task) => {
               const isCompleted = task.status === "done";
               const isOverdue =
                 task.due_date && task.due_date < todayStr && !isCompleted;

@@ -4,7 +4,16 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
-import { Folder, Trash2, Plus, Inbox, Pencil, X } from "lucide-react";
+import {
+  Folder,
+  Trash2,
+  Plus,
+  Inbox,
+  Pencil,
+  X,
+  ArrowUpDown,
+  Search,
+} from "lucide-react";
 
 export default function CategoriesPage() {
   const { user } = useAuth();
@@ -13,6 +22,8 @@ export default function CategoriesPage() {
   const [color, setColor] = useState("#3b82f6");
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState(null); // 👈 mới
+  const [sortBy, setSortBy] = useState("name_asc"); // 👈 mới
+  const [searchQuery, setSearchQuery] = useState(""); // 👈 mới
 
   const fetchCategories = async () => {
     const { data, error } = await supabase
@@ -80,6 +91,17 @@ export default function CategoriesPage() {
       fetchCategories();
     }
   };
+
+  // Lọc theo từ khóa tìm kiếm (không phân biệt hoa/thường), rồi mới sort
+  const filteredCategories = categories.filter((c) =>
+    c.name.toLowerCase().includes(searchQuery.trim().toLowerCase()),
+  );
+
+  // Sắp xếp danh sách hiển thị theo lựa chọn sort, không đổi state gốc
+  const sortedCategories = [...filteredCategories].sort((a, b) => {
+    const cmp = a.name.localeCompare(b.name);
+    return sortBy === "name_desc" ? -cmp : cmp;
+  });
 
   if (loading) {
     return <CategoriesSkeleton />;
@@ -174,7 +196,33 @@ export default function CategoriesPage() {
       </div>
 
       {/* DANH SÁCH CATEGORIES */}
-      <div>
+      <div className="space-y-3">
+        {categories.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="relative flex-1 sm:max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search categories..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 placeholder:text-slate-400 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+              />
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              >
+                <option value="name_asc">Name (A-Z)</option>
+                <option value="name_desc">Name (Z-A)</option>
+              </select>
+            </div>
+          </div>
+        )}
+
         {categories.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
             <Inbox className="h-8 w-8 text-slate-300 mb-3" />
@@ -185,9 +233,19 @@ export default function CategoriesPage() {
               Create categories to group related tasks together.
             </p>
           </div>
+        ) : sortedCategories.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+            <Search className="h-8 w-8 text-slate-300 mb-3" />
+            <p className="text-sm font-bold text-slate-600">
+              No categories match &ldquo;{searchQuery}&rdquo;
+            </p>
+            <p className="text-xs text-slate-400 mt-1">
+              Try a different search term.
+            </p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {categories.map((c) => (
+            {sortedCategories.map((c) => (
               <div
                 key={c.id}
                 className={`group bg-white border rounded-xl p-4 flex items-center justify-between hover:border-slate-200 hover:shadow-xs transition-all ${
