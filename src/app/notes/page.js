@@ -1,3 +1,4 @@
+// src\app\schedules\page.js
 "use client";
 
 import { useEffect, useState } from "react";
@@ -121,7 +122,8 @@ export default function NotesPage() {
             Notes
           </h1>
           <p className="text-slate-500 text-sm font-medium mt-1">
-            Capture thoughts, store simple wikis, and link them to tasks or goals
+            Capture thoughts, store simple wikis, and link them to tasks or
+            goals
           </p>
         </div>
         <span className="bg-primary/5 text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/10">
@@ -131,7 +133,9 @@ export default function NotesPage() {
 
       {/* FORM VIẾT NOTE MỚI */}
       <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
-        <h3 className="text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">New Note</h3>
+        <h3 className="text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">
+          New Note
+        </h3>
         <form onSubmit={handleAddNote} className="space-y-4">
           <textarea
             placeholder="Write your note here..."
@@ -146,7 +150,9 @@ export default function NotesPage() {
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
               {/* LINK TYPE */}
               <div className="flex flex-col gap-1 w-full sm:w-44">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Link to</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">
+                  Link to
+                </label>
                 <select
                   value={linkType}
                   onChange={(e) => {
@@ -164,7 +170,9 @@ export default function NotesPage() {
               {/* LINK ID FOR TASK */}
               {linkType === "task" && (
                 <div className="flex flex-col gap-1 w-full sm:w-60">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase">Select Task</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">
+                    Select Task
+                  </label>
                   <select
                     value={linkId}
                     onChange={(e) => setLinkId(e.target.value)}
@@ -183,7 +191,9 @@ export default function NotesPage() {
               {/* LINK ID FOR GOAL */}
               {linkType === "goal" && (
                 <div className="flex flex-col gap-1 w-full sm:w-60">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase">Select Goal</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">
+                    Select Goal
+                  </label>
                   <select
                     value={linkId}
                     onChange={(e) => setLinkId(e.target.value)}
@@ -224,13 +234,16 @@ export default function NotesPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {notes.map((note) => {
-              const formattedDate = new Date(note.created_at).toLocaleString("en-US", {
-                hour: "2-digit",
-                minute: "2-digit",
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              });
+              const formattedDate = new Date(note.created_at).toLocaleString(
+                "en-US",
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                },
+              );
 
               return (
                 <div
@@ -258,7 +271,9 @@ export default function NotesPage() {
                           <span
                             key={i}
                             className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded ${
-                              isTask ? "bg-blue-50 text-blue-600" : "bg-amber-50 text-amber-600"
+                              isTask
+                                ? "bg-blue-50 text-blue-600"
+                                : "bg-amber-50 text-amber-600"
                             } max-w-[150px] truncate`}
                             title={`${isTask ? "Task" : "Goal"}: ${label}`}
                           >
@@ -313,7 +328,10 @@ function NotesSkeleton() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="bg-white border border-slate-100 rounded-xl p-5 space-y-4">
+          <div
+            key={i}
+            className="bg-white border border-slate-100 rounded-xl p-5 space-y-4"
+          >
             <div className="space-y-2">
               <div className="h-4 w-full bg-slate-200 rounded-md" />
               <div className="h-4 w-5/6 bg-slate-200 rounded-md" />

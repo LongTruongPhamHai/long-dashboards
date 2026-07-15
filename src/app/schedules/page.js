@@ -1,3 +1,4 @@
+// src\app\schedules\page.js
 "use client";
 
 import { useEffect, useState } from "react";
@@ -103,12 +104,15 @@ export default function SchedulesPage() {
   }
 
   // Format ngày để hiển thị tiêu đề đẹp
-  const selectedDateFormatted = new Date(selectedDate).toLocaleDateString("en-US", {
-    weekday: "long",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  const selectedDateFormatted = new Date(selectedDate).toLocaleDateString(
+    "en-US",
+    {
+      weekday: "long",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    },
+  );
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
@@ -126,7 +130,9 @@ export default function SchedulesPage() {
 
         {/* BỘ CHỌN NGÀY */}
         <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-xs">
-          <span className="text-xs font-bold text-slate-400 uppercase shrink-0">Select Date:</span>
+          <span className="text-xs font-bold text-slate-400 uppercase shrink-0">
+            Select Date:
+          </span>
           <input
             type="date"
             value={selectedDate}
@@ -138,11 +144,15 @@ export default function SchedulesPage() {
 
       {/* FORM THÊM SỰ KIỆN */}
       <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
-        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">New Event</h3>
+        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">
+          New Event
+        </h3>
         <form onSubmit={handleAdd} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2 flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">Event Name</label>
+              <label className="text-xs font-semibold text-slate-500">
+                Event Name
+              </label>
               <input
                 type="text"
                 placeholder="Enter meeting, event, appointment name..."
@@ -154,7 +164,9 @@ export default function SchedulesPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">Link to Task (Optional)</label>
+              <label className="text-xs font-semibold text-slate-500">
+                Link to Task (Optional)
+              </label>
               <select
                 value={taskId}
                 onChange={(e) => setTaskId(e.target.value)}
@@ -172,7 +184,9 @@ export default function SchedulesPage() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">Start Time</label>
+              <label className="text-xs font-semibold text-slate-500">
+                Start Time
+              </label>
               <div className="relative">
                 <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                 <input
@@ -186,7 +200,9 @@ export default function SchedulesPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">End Time</label>
+              <label className="text-xs font-semibold text-slate-500">
+                End Time
+              </label>
               <div className="relative">
                 <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                 <input
@@ -216,7 +232,9 @@ export default function SchedulesPage() {
       <div className="space-y-4">
         <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
           <span>Schedule for:</span>
-          <span className="text-primary font-bold">{selectedDateFormatted}</span>
+          <span className="text-primary font-bold">
+            {selectedDateFormatted}
+          </span>
         </h2>
 
         {schedulesForSelectedDate.length === 0 ? (
@@ -224,7 +242,8 @@ export default function SchedulesPage() {
             <CalendarOff className="h-8 w-8 text-slate-300 mb-3" />
             <p className="text-sm font-bold text-slate-600">No events</p>
             <p className="text-xs text-slate-400 mt-1">
-              No events scheduled for this day. Enjoy your free time or add a new event!
+              No events scheduled for this day. Enjoy your free time or add a
+              new event!
             </p>
           </div>
         ) : (

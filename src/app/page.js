@@ -1,3 +1,4 @@
+// src\app\page.js
 "use client";
 
 import { useAuth } from "@/lib/auth-context";
@@ -99,7 +100,9 @@ export default function Home() {
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
             Welcome back, {userDisplayName}!
           </h1>
-          <p className="text-slate-500 text-sm font-medium mt-1">{todayString}</p>
+          <p className="text-slate-500 text-sm font-medium mt-1">
+            {todayString}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Link
@@ -132,8 +135,12 @@ export default function Home() {
             {overdueTasks.length === 0 ? (
               <div className="flex flex-col items-center justify-center p-6 bg-emerald-50/20 border border-dashed border-emerald-100 rounded-xl text-center">
                 <CheckCircle2 className="h-6 w-6 text-emerald-500 mb-2" />
-                <p className="text-sm font-medium text-emerald-800">No overdue tasks</p>
-                <p className="text-xs text-emerald-600/80 mt-0.5">Great job! You are all caught up.</p>
+                <p className="text-sm font-medium text-emerald-800">
+                  No overdue tasks
+                </p>
+                <p className="text-xs text-emerald-600/80 mt-0.5">
+                  Great job! You are all caught up.
+                </p>
               </div>
             ) : (
               <div className="bg-white border border-slate-100 rounded-xl divide-y divide-slate-50 overflow-hidden shadow-xs">
@@ -187,8 +194,12 @@ export default function Home() {
             {todayTasks.length === 0 ? (
               <div className="flex flex-col items-center justify-center p-8 bg-slate-50/50 border border-dashed border-slate-200 rounded-xl text-center">
                 <Sparkles className="h-6 w-6 text-slate-400 mb-2" />
-                <p className="text-sm font-medium text-slate-600">All clear for today</p>
-                <p className="text-xs text-slate-400 mt-0.5">No tasks due today. Have a productive day!</p>
+                <p className="text-sm font-medium text-slate-600">
+                  All clear for today
+                </p>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  No tasks due today. Have a productive day!
+                </p>
               </div>
             ) : (
               <div className="bg-white border border-slate-100 rounded-xl divide-y divide-slate-50 overflow-hidden shadow-xs">
@@ -233,15 +244,20 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center p-8 bg-slate-50/50 border border-dashed border-slate-200 rounded-xl text-center h-[200px]">
               <CalendarDays className="h-6 w-6 text-slate-300 mb-2" />
               <p className="text-sm font-medium text-slate-500">No events</p>
-              <p className="text-xs text-slate-400 mt-0.5">Your schedule is empty for today.</p>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Your schedule is empty for today.
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
               {todaySchedules.map((s) => {
-                const start = new Date(s.start_time).toLocaleTimeString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                });
+                const start = new Date(s.start_time).toLocaleTimeString(
+                  "en-US",
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  },
+                );
                 return (
                   <div
                     key={s.id}

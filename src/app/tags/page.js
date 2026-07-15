@@ -1,3 +1,4 @@
+// src\app\tags\page.js
 "use client";
 
 import { useEffect, useState } from "react";
@@ -73,10 +74,17 @@ export default function TagsPage() {
 
       {/* FORM THÊM TAG */}
       <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
-        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">New Tag</h3>
-        <form onSubmit={handleAdd} className="flex flex-col sm:flex-row gap-3 items-end sm:items-center">
+        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">
+          New Tag
+        </h3>
+        <form
+          onSubmit={handleAdd}
+          className="flex flex-col sm:flex-row gap-3 items-end sm:items-center"
+        >
           <div className="flex-1 w-full flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-500">Tag Name</label>
+            <label className="text-xs font-semibold text-slate-500">
+              Tag Name
+            </label>
             <input
               type="text"
               placeholder="e.g. Urgent, In Progress, Review..."
@@ -89,7 +97,9 @@ export default function TagsPage() {
 
           <div className="flex items-center gap-3 w-full sm:w-auto pt-2 sm:pt-0 shrink-0">
             <div className="flex flex-col gap-1.5 shrink-0">
-              <label className="text-xs font-semibold text-slate-500">Color</label>
+              <label className="text-xs font-semibold text-slate-500">
+                Color
+              </label>
               <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shrink-0">
                 <input
                   type="color"
@@ -177,7 +187,10 @@ function TagsSkeleton() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="p-3 bg-white border border-slate-100 rounded-xl flex items-center gap-2">
+          <div
+            key={i}
+            className="p-3 bg-white border border-slate-100 rounded-xl flex items-center gap-2"
+          >
             <div className="w-2.5 h-2.5 rounded-full bg-slate-200 shrink-0" />
             <div className="h-3.5 w-2/3 bg-slate-200 rounded-md" />
           </div>

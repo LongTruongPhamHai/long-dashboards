@@ -1,3 +1,4 @@
+// src\app\categories\page.js
 "use client";
 
 import { useEffect, useState } from "react";
@@ -73,10 +74,17 @@ export default function CategoriesPage() {
 
       {/* FORM THÊM CATEGORY */}
       <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
-        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">New Category</h3>
-        <form onSubmit={handleAdd} className="flex flex-col sm:flex-row gap-3 items-end sm:items-center">
+        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">
+          New Category
+        </h3>
+        <form
+          onSubmit={handleAdd}
+          className="flex flex-col sm:flex-row gap-3 items-end sm:items-center"
+        >
           <div className="flex-1 w-full flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-500">Category Name</label>
+            <label className="text-xs font-semibold text-slate-500">
+              Category Name
+            </label>
             <input
               type="text"
               placeholder="e.g. Work, Personal, Education..."
@@ -89,7 +97,9 @@ export default function CategoriesPage() {
 
           <div className="flex items-center gap-3 w-full sm:w-auto pt-2 sm:pt-0 shrink-0">
             <div className="flex flex-col gap-1.5 shrink-0">
-              <label className="text-xs font-semibold text-slate-500">Color</label>
+              <label className="text-xs font-semibold text-slate-500">
+                Color
+              </label>
               <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shrink-0">
                 <input
                   type="color"
@@ -116,7 +126,9 @@ export default function CategoriesPage() {
         {categories.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
             <Inbox className="h-8 w-8 text-slate-300 mb-3" />
-            <p className="text-sm font-bold text-slate-600">No categories yet</p>
+            <p className="text-sm font-bold text-slate-600">
+              No categories yet
+            </p>
             <p className="text-xs text-slate-400 mt-1">
               Create categories to group related tasks together.
             </p>
@@ -174,7 +186,10 @@ function CategoriesSkeleton() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="p-4 bg-white border border-slate-100 rounded-xl flex items-center gap-3">
+          <div
+            key={i}
+            className="p-4 bg-white border border-slate-100 rounded-xl flex items-center gap-3"
+          >
             <div className="w-3.5 h-3.5 rounded-full bg-slate-200 shrink-0" />
             <div className="h-4 w-2/3 bg-slate-200 rounded-md" />
           </div>

@@ -1,3 +1,4 @@
+// src\app\goals\page.js
 "use client";
 
 import { useEffect, useState } from "react";
@@ -115,7 +116,9 @@ export default function GoalsPage() {
       <div
         key={goal.id}
         className="space-y-3"
-        style={{ paddingLeft: depth > 0 ? `${Math.min(depth * 1.5, 6)}rem` : "0" }}
+        style={{
+          paddingLeft: depth > 0 ? `${Math.min(depth * 1.5, 6)}rem` : "0",
+        }}
       >
         <div className="group relative bg-white border border-slate-100 rounded-xl p-4 hover:border-slate-200 transition-all shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Nhánh nối (nếu là con) */}
@@ -137,7 +140,13 @@ export default function GoalsPage() {
             <div className="mt-3 max-w-md">
               <div className="flex justify-between items-center text-xs font-semibold text-slate-500 mb-1">
                 <span>Progress</span>
-                <span className={percent === 100 ? "text-emerald-600 font-bold" : "text-primary"}>
+                <span
+                  className={
+                    percent === 100
+                      ? "text-emerald-600 font-bold"
+                      : "text-primary"
+                  }
+                >
                   {percent}% ({c?.done || 0}/{c?.total || 0} tasks)
                 </span>
               </div>
@@ -197,11 +206,15 @@ export default function GoalsPage() {
 
       {/* FORM THÊM GOAL MỚI */}
       <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
-        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">New Goal</h3>
+        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">
+          New Goal
+        </h3>
         <form onSubmit={handleAddGoal} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
             <div className="md:col-span-2 flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">Goal Title</label>
+              <label className="text-xs font-semibold text-slate-500">
+                Goal Title
+              </label>
               <input
                 type="text"
                 placeholder="Enter goal name..."
@@ -212,7 +225,9 @@ export default function GoalsPage() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">Parent Goal (Optional)</label>
+              <label className="text-xs font-semibold text-slate-500">
+                Parent Goal (Optional)
+              </label>
               <select
                 value={parentGoalId}
                 onChange={(e) => setParentGoalId(e.target.value)}
@@ -281,7 +296,10 @@ function GoalsSkeleton() {
 
       <div className="space-y-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="p-4 bg-white border border-slate-100 rounded-xl space-y-3">
+          <div
+            key={i}
+            className="p-4 bg-white border border-slate-100 rounded-xl space-y-3"
+          >
             <div className="flex items-center gap-2">
               <div className="h-6 w-6 bg-slate-200 rounded-md shrink-0" />
               <div className="h-5 w-1/3 bg-slate-200 rounded-md" />

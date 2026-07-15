@@ -1,3 +1,5 @@
+// src\app\layout.js
+
 import { AuthProvider } from "@/lib/auth-context";
 import LayoutWrapper from "@/components/layout-wrapper";
 import { Inter } from "next/font/google";

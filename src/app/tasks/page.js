@@ -1,3 +1,4 @@
+// src\app\tasks\page.js
 "use client";
 
 import { useEffect, useState } from "react";
@@ -56,7 +57,9 @@ export default function TasksPage() {
   };
 
   const fetchCategories = async () => {
-    const { data } = await supabase.from("categories").select("id, name, color");
+    const { data } = await supabase
+      .from("categories")
+      .select("id, name, color");
     setCategories(data || []);
   };
 
@@ -179,7 +182,9 @@ export default function TasksPage() {
 
       {/* FORM NHẬP TASK MỚI */}
       <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
-        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">New Task</h3>
+        <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">
+          New Task
+        </h3>
         <form onSubmit={handleAddTask} className="space-y-4">
           <div className="flex flex-col md:flex-row gap-3">
             <input
@@ -201,7 +206,9 @@ export default function TasksPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* GOAL SELECT */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">Linked Goal</label>
+              <label className="text-xs font-semibold text-slate-500">
+                Linked Goal
+              </label>
               <select
                 value={goalId}
                 onChange={(e) => setGoalId(e.target.value)}
@@ -218,7 +225,9 @@ export default function TasksPage() {
 
             {/* CATEGORY SELECT */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">Category</label>
+              <label className="text-xs font-semibold text-slate-500">
+                Category
+              </label>
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
@@ -237,7 +246,9 @@ export default function TasksPage() {
           {/* TAGS MULTI-SELECT (RENDER DẠNG BADGES ĐỂ CHỌN NHANH) */}
           {tags.length > 0 && (
             <div className="flex flex-col gap-2 border-t border-slate-50 pt-3">
-              <label className="text-xs font-semibold text-slate-500">Select Tags</label>
+              <label className="text-xs font-semibold text-slate-500">
+                Select Tags
+              </label>
               <div className="flex flex-wrap gap-2">
                 {tags.map((t) => {
                   const isSelected = selectedTagIds.includes(t.id);
@@ -298,8 +309,11 @@ export default function TasksPage() {
               const isCompleted = task.status === "done";
               const isOverdue =
                 task.due_date && task.due_date < todayStr && !isCompleted;
-              const isDueToday = task.due_date && task.due_date === todayStr && !isCompleted;
-              const matchedCategory = categories.find((c) => c.id === task.category_id);
+              const isDueToday =
+                task.due_date && task.due_date === todayStr && !isCompleted;
+              const matchedCategory = categories.find(
+                (c) => c.id === task.category_id,
+              );
 
               return (
                 <div
@@ -344,10 +358,10 @@ export default function TasksPage() {
                             isCompleted
                               ? "bg-slate-100 text-slate-400"
                               : isOverdue
-                              ? "bg-rose-50 text-rose-600"
-                              : isDueToday
-                              ? "bg-amber-50 text-amber-600"
-                              : "bg-slate-50 text-slate-500"
+                                ? "bg-rose-50 text-rose-600"
+                                : isDueToday
+                                  ? "bg-amber-50 text-amber-600"
+                                  : "bg-slate-50 text-slate-500"
                           }`}
                         >
                           <Calendar className="h-3 w-3" />

@@ -1,3 +1,4 @@
+// src\components\layout-wrapper.js
 "use client";
 
 import React, { useState } from "react";
@@ -33,7 +34,9 @@ export default function LayoutWrapper({ children }) {
       <div className="flex h-screen w-screen items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-2">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-slate-500 font-medium animate-pulse">Preparing...</p>
+          <p className="text-sm text-slate-500 font-medium animate-pulse">
+            Preparing...
+          </p>
         </div>
       </div>
     );
@@ -80,7 +83,9 @@ export default function LayoutWrapper({ children }) {
           <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
             LD
           </div>
-          <span className="font-semibold text-slate-800 tracking-tight">Long Dashboards</span>
+          <span className="font-semibold text-slate-800 tracking-tight">
+            Long Dashboards
+          </span>
         </div>
 
         {/* Menu Items */}
@@ -98,7 +103,9 @@ export default function LayoutWrapper({ children }) {
                     : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
                 }`}
               >
-                <Icon className={`h-4 w-4 shrink-0 ${isActive ? "text-primary" : "text-slate-400"}`} />
+                <Icon
+                  className={`h-4 w-4 shrink-0 ${isActive ? "text-primary" : "text-slate-400"}`}
+                />
                 {item.label}
               </Link>
             );
@@ -112,7 +119,9 @@ export default function LayoutWrapper({ children }) {
               <User className="h-4 w-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-slate-400 font-medium truncate">Account</p>
+              <p className="text-xs text-slate-400 font-medium truncate">
+                Account
+              </p>
               <p className="text-xs text-slate-700 font-semibold truncate leading-tight">
                 {user.email}
               </p>
@@ -138,7 +147,9 @@ export default function LayoutWrapper({ children }) {
             >
               <Menu className="h-5 w-5" />
             </button>
-            <h1 className="font-semibold text-slate-800 text-base">{getPageTitle()}</h1>
+            <h1 className="font-semibold text-slate-800 text-base">
+              {getPageTitle()}
+            </h1>
           </div>
           <div className="h-7 w-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
             <User className="h-3.5 w-3.5" />
@@ -187,7 +198,9 @@ export default function LayoutWrapper({ children }) {
                         : "text-slate-500 hover:bg-slate-50"
                     }`}
                   >
-                    <Icon className={`h-4 w-4 ${isActive ? "text-primary" : "text-slate-400"}`} />
+                    <Icon
+                      className={`h-4 w-4 ${isActive ? "text-primary" : "text-slate-400"}`}
+                    />
                     {item.label}
                   </Link>
                 );
@@ -234,7 +247,9 @@ export default function LayoutWrapper({ children }) {
               }`}
             >
               <Icon className="h-5 w-5" />
-              <span className="text-[10px] font-semibold tracking-tight">{item.label}</span>
+              <span className="text-[10px] font-semibold tracking-tight">
+                {item.label}
+              </span>
             </Link>
           );
         })}
