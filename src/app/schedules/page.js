@@ -187,42 +187,42 @@ export default function SchedulesPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       {/* HEADER */}
-      <div className="border-b border-slate-100 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="border-b border-border pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
             <Calendar className="h-6 w-6 text-primary" />
             Schedule
           </h1>
-          <p className="text-slate-500 text-sm font-medium mt-1">
+          <p className="text-muted-foreground text-sm font-medium mt-1">
             Manage your daily appointments and personal work schedules
           </p>
         </div>
 
         {/* BỘ CHỌN NGÀY */}
-        <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-xs">
-          <span className="text-xs font-bold text-slate-400 uppercase shrink-0">
+        <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-1.5 shadow-xs">
+          <span className="text-xs font-bold text-muted-foreground/70 uppercase shrink-0">
             Select Date:
           </span>
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="text-sm font-bold text-slate-700 focus:outline-hidden bg-transparent cursor-pointer"
+            className="text-sm font-bold text-foreground/70 focus:outline-hidden bg-transparent cursor-pointer"
           />
         </div>
       </div>
 
       {/* FORM THÊM/SỬA SỰ KIỆN */}
-      <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
+      <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+          <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">
             {editingId ? "Edit Event" : "New Event"}
           </h3>
           {editingId && (
             <button
               type="button"
               onClick={resetForm}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-slate-600"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground"
             >
               <X className="h-3.5 w-3.5" />
               Cancel
@@ -232,7 +232,7 @@ export default function SchedulesPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2 flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">
+              <label className="text-xs font-semibold text-muted-foreground">
                 Event Name
               </label>
               <input
@@ -240,19 +240,19 @@ export default function SchedulesPage() {
                 placeholder="Enter meeting, event, appointment name..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50/30"
+                className="w-full px-4 py-2 rounded-lg border border-border text-sm font-medium placeholder:text-muted-foreground/60 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-muted/20"
                 required
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">
+              <label className="text-xs font-semibold text-muted-foreground">
                 Link to Task (Optional)
               </label>
               <select
                 value={taskId}
                 onChange={(e) => setTaskId(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-600 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full px-3 py-2.5 rounded-lg border border-border bg-card text-sm font-medium text-foreground/70 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               >
                 <option value="">-- No Task Link --</option>
                 {tasks.map((t) => (
@@ -266,7 +266,7 @@ export default function SchedulesPage() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">
+              <label className="text-xs font-semibold text-muted-foreground">
                 Start Time
               </label>
               <div className="relative">
@@ -275,14 +275,14 @@ export default function SchedulesPage() {
                   type="time"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 focus:outline-hidden bg-slate-50/30"
+                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-border text-sm font-medium text-foreground/70 focus:outline-hidden bg-muted/20"
                   required
                 />
               </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">
+              <label className="text-xs font-semibold text-muted-foreground">
                 End Time
               </label>
               <div className="relative">
@@ -291,7 +291,7 @@ export default function SchedulesPage() {
                   type="time"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 focus:outline-hidden bg-slate-50/30"
+                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-border text-sm font-medium text-foreground/70 focus:outline-hidden bg-muted/20"
                   required
                 />
               </div>
@@ -322,7 +322,7 @@ export default function SchedulesPage() {
       {/* TIMELINE VIEW CHO NGÀY ĐANG CHỌN */}
       <div className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+          <h2 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
             <span>Schedule for:</span>
             <span className="text-primary font-bold">
               {selectedDateFormatted}
@@ -338,14 +338,14 @@ export default function SchedulesPage() {
                   placeholder="Search events..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 placeholder:text-slate-400 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white w-40 sm:w-48"
+                  className="pl-9 pr-3 py-1.5 rounded-lg border border-border text-xs font-semibold text-foreground/70 placeholder:text-muted-foreground/60 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-card w-40 sm:w-48"
                 />
               </div>
               <ArrowUpDown className="h-3.5 w-3.5 text-slate-400 shrink-0" />
               <select
                 value={sortDir}
                 onChange={(e) => setSortDir(e.target.value)}
-                className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="text-xs font-semibold text-foreground/70 bg-card border border-border rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               >
                 <option value="asc">Earliest first</option>
                 <option value="desc">Latest first</option>
@@ -355,26 +355,26 @@ export default function SchedulesPage() {
         </div>
 
         {schedulesForSelectedDate.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+          <div className="flex flex-col items-center justify-center p-12 bg-muted/30 border border-dashed border-border rounded-2xl text-center">
             <CalendarOff className="h-8 w-8 text-slate-300 mb-3" />
-            <p className="text-sm font-bold text-slate-600">No events</p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-sm font-bold text-foreground/70">No events</p>
+            <p className="text-xs text-muted-foreground mt-1">
               No events scheduled for this day. Enjoy your free time or add a
               new event!
             </p>
           </div>
         ) : sortedSchedules.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+          <div className="flex flex-col items-center justify-center p-12 bg-muted/30 border border-dashed border-border rounded-2xl text-center">
             <Search className="h-8 w-8 text-slate-300 mb-3" />
-            <p className="text-sm font-bold text-slate-600">
+            <p className="text-sm font-bold text-foreground/70">
               No events match &ldquo;{searchQuery}&rdquo;
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Try a different search term.
             </p>
           </div>
         ) : (
-          <div className="relative border-l-2 border-slate-100 pl-6 ml-3 py-2 space-y-6">
+          <div className="relative border-l-2 border-border pl-6 ml-3 py-2 space-y-6">
             {sortedSchedules.map((s) => {
               const start = new Date(s.start_time).toLocaleTimeString("en-US", {
                 hour: "2-digit",
@@ -388,10 +388,10 @@ export default function SchedulesPage() {
               return (
                 <div key={s.id} className="relative group">
                   {/* Dot trên dòng timeline */}
-                  <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full border-2 border-white bg-primary shadow-xs" />
+                  <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full border-2 border-card bg-primary shadow-xs" />
 
                   <div
-                    className={`bg-white border rounded-xl p-4 flex items-start sm:items-center justify-between gap-4 hover:border-slate-200 hover:shadow-xs transition-all ${
+                    className={`bg-card border rounded-xl p-4 flex items-start sm:items-center justify-between gap-4 hover:border-border hover:shadow-xs transition-all ${
                       editingId === s.id
                         ? "border-primary/40 ring-2 ring-primary/10"
                         : "border-slate-100"
@@ -403,7 +403,7 @@ export default function SchedulesPage() {
                           {start} - {end}
                         </span>
                       </div>
-                      <h4 className="text-sm font-bold text-slate-800 leading-snug break-words">
+                      <h4 className="text-sm font-bold text-foreground leading-snug break-words">
                         {s.title}
                       </h4>
 
@@ -448,36 +448,36 @@ export default function SchedulesPage() {
 function SchedulesSkeleton() {
   return (
     <div className="space-y-8 animate-pulse max-w-5xl">
-      <div className="border-b border-slate-100 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="border-b border-border pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="h-8 w-48 bg-slate-200 rounded-lg" />
-          <div className="h-4 w-64 bg-slate-100 rounded-md mt-2" />
+          <div className="h-8 w-48 bg-muted rounded-lg" />
+          <div className="h-4 w-64 bg-muted/50 rounded-md mt-2" />
         </div>
-        <div className="h-10 w-44 bg-slate-100 rounded-lg" />
+        <div className="h-10 w-44 bg-muted/50 rounded-lg" />
       </div>
 
-      <div className="bg-white border border-slate-100 rounded-xl p-5 space-y-4">
-        <div className="h-5 w-24 bg-slate-200 rounded-md" />
+      <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+        <div className="h-5 w-24 bg-muted rounded-md" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="md:col-span-2 h-10 bg-slate-100 rounded-lg" />
-          <div className="h-10 bg-slate-100 rounded-lg" />
+          <div className="md:col-span-2 h-10 bg-muted/50 rounded-lg" />
+          <div className="h-10 bg-muted/50 rounded-lg" />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="h-10 bg-slate-100 rounded-lg" />
-          <div className="h-10 bg-slate-100 rounded-lg" />
-          <div className="col-span-2 h-10 bg-slate-200 rounded-lg" />
+          <div className="h-10 bg-muted/50 rounded-lg" />
+          <div className="h-10 bg-muted/50 rounded-lg" />
+          <div className="col-span-2 h-10 bg-muted rounded-lg" />
         </div>
       </div>
 
       <div className="space-y-6">
-        <div className="h-5 w-56 bg-slate-200 rounded-md" />
+        <div className="h-5 w-56 bg-muted rounded-md" />
         <div className="border-l-2 border-slate-100 pl-6 ml-3 space-y-6">
           {[1, 2].map((i) => (
             <div key={i} className="relative space-y-2">
-              <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-slate-200" />
-              <div className="bg-white border border-slate-100 rounded-xl p-4 space-y-2">
-                <div className="h-5 w-20 bg-slate-100 rounded-full" />
-                <div className="h-4 w-1/3 bg-slate-200 rounded-md" />
+              <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-muted" />
+              <div className="bg-card border border-border rounded-xl p-4 space-y-2">
+                <div className="h-5 w-20 bg-muted/50 rounded-full" />
+                <div className="h-4 w-1/3 bg-muted rounded-md" />
               </div>
             </div>
           ))}

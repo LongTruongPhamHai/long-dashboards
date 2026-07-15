@@ -208,21 +208,21 @@ export default function Home() {
   ];
 
   const toneClasses = {
-    rose: "bg-rose-50 text-rose-600",
-    amber: "bg-amber-50 text-amber-600",
-    primary: "bg-primary/5 text-primary",
-    slate: "bg-slate-100 text-slate-600",
+    rose: "bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-450",
+    amber: "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-450",
+    primary: "bg-primary/5 text-primary dark:bg-primary/10 dark:text-primary",
+    slate: "bg-slate-100 text-slate-600 dark:bg-muted dark:text-muted-foreground",
   };
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       {/* HEADER SECTION */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border/50 pb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">
             Welcome back, {userDisplayName}!
           </h1>
-          <p className="text-slate-500 text-sm font-medium mt-1">
+          <p className="text-muted-foreground text-sm font-medium mt-1">
             {todayString}
           </p>
         </div>
@@ -244,7 +244,7 @@ export default function Home() {
           return (
             <div
               key={stat.label}
-              className="bg-white border border-slate-100 rounded-xl p-4 flex items-center gap-3 shadow-xs"
+              className="bg-card border border-border rounded-xl p-4 flex items-center gap-3 shadow-xs"
             >
               <div
                 className={`h-9 w-9 rounded-lg flex items-center justify-center shrink-0 ${toneClasses[stat.tone]}`}
@@ -252,10 +252,10 @@ export default function Home() {
                 <Icon className="h-4 w-4" />
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-bold text-slate-800 leading-none">
+                <p className="text-lg font-bold text-foreground leading-none">
                   {stat.value}
                 </p>
-                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mt-1 truncate">
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide mt-1 truncate">
                   {stat.label}
                 </p>
               </div>
@@ -276,14 +276,14 @@ export default function Home() {
                   Overdue
                 </h2>
                 {overdueTasks.length > 0 && (
-                  <span className="bg-rose-50 text-rose-600 px-2 py-0.5 text-xs rounded-full font-bold">
+                  <span className="bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 px-2 py-0.5 text-xs rounded-full font-bold">
                     {overdueTasks.length}
                   </span>
                 )}
               </div>
               <Link
                 href="/tasks"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-primary transition-colors shrink-0"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors shrink-0"
               >
                 View all
                 <ArrowRight className="h-3 w-3" />
@@ -291,22 +291,22 @@ export default function Home() {
             </div>
 
             {overdueTasks.length === 0 ? (
-              <div className="flex flex-col items-center justify-center p-6 bg-emerald-50/20 border border-dashed border-emerald-100 rounded-xl text-center">
+              <div className="flex flex-col items-center justify-center p-6 bg-emerald-500/5 border border-dashed border-emerald-500/20 rounded-xl text-center">
                 <CheckCircle2 className="h-6 w-6 text-emerald-500 mb-2" />
-                <p className="text-sm font-medium text-emerald-800">
+                <p className="text-sm font-medium text-emerald-800 dark:text-emerald-400">
                   No overdue tasks
                 </p>
-                <p className="text-xs text-emerald-600/80 mt-0.5">
+                <p className="text-xs text-emerald-600/80 dark:text-emerald-500 mt-0.5">
                   Great job! You are all caught up.
                 </p>
               </div>
             ) : (
-              <div className="bg-white border border-slate-100 rounded-xl divide-y divide-slate-50 overflow-hidden shadow-xs">
+              <div className="bg-card border border-border rounded-xl divide-y divide-border/50 overflow-hidden shadow-xs">
                 {overdueTasks.map((task) => (
                   <Link
                     key={task.id}
                     href="/tasks"
-                    className="flex items-start gap-3 p-4 hover:bg-slate-50/50 transition-colors group"
+                    className="flex items-start gap-3 p-4 hover:bg-muted/50 transition-colors group"
                   >
                     <button
                       onClick={(e) => {
@@ -314,21 +314,21 @@ export default function Home() {
                         e.stopPropagation();
                         toggleStatus(task);
                       }}
-                      className="text-slate-300 hover:text-primary transition-colors mt-0.5 shrink-0"
+                      className="text-muted-foreground/60 hover:text-primary transition-colors mt-0.5 shrink-0"
                     >
                       <Square className="h-5 w-5" />
                     </button>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-700 leading-normal break-words">
+                      <p className="text-sm font-semibold text-foreground/90 leading-normal break-words">
                         {task.title}
                       </p>
                       <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                        <span className="inline-flex items-center gap-1 text-xs text-rose-500 font-semibold bg-rose-50 px-1.5 py-0.5 rounded">
+                        <span className="inline-flex items-center gap-1 text-xs text-rose-500 font-semibold bg-rose-50 dark:bg-rose-500/10 dark:text-rose-400 px-1.5 py-0.5 rounded">
                           <Clock className="h-3 w-3" />
                           Due: {task.due_date}
                         </span>
                         {task.goals?.title && (
-                          <span className="inline-block text-[10px] text-slate-500 font-semibold bg-slate-100 px-1.5 py-0.5 rounded truncate max-w-[150px]">
+                          <span className="inline-block text-[10px] text-muted-foreground font-semibold bg-muted px-1.5 py-0.5 rounded truncate max-w-[150px]">
                             {task.goals.title}
                           </span>
                         )}
@@ -344,19 +344,19 @@ export default function Home() {
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                  <Clock className="h-4 w-4 shrink-0 text-slate-400" />
+                <h2 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                  <Clock className="h-4 w-4 shrink-0 text-muted-foreground" />
                   Due Soon
                 </h2>
                 {upcomingTasks.length > 0 && (
-                  <span className="bg-slate-100 text-slate-700 px-2 py-0.5 text-xs rounded-full font-bold">
+                  <span className="bg-muted text-foreground px-2 py-0.5 text-xs rounded-full font-bold">
                     {upcomingTasks.length}
                   </span>
                 )}
               </div>
               <Link
                 href="/tasks"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-primary transition-colors shrink-0"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors shrink-0"
               >
                 View all
                 <ArrowRight className="h-3 w-3" />
@@ -364,22 +364,22 @@ export default function Home() {
             </div>
 
             {upcomingTasks.length === 0 ? (
-              <div className="flex flex-col items-center justify-center p-8 bg-slate-50/50 border border-dashed border-slate-200 rounded-xl text-center">
-                <Sparkles className="h-6 w-6 text-slate-400 mb-2" />
-                <p className="text-sm font-medium text-slate-600">
+              <div className="flex flex-col items-center justify-center p-8 bg-muted/30 border border-dashed border-border rounded-xl text-center">
+                <Sparkles className="h-6 w-6 text-muted-foreground mb-2" />
+                <p className="text-sm font-medium text-foreground/80">
                   Nothing due soon
                 </p>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   No tasks due in the next {UPCOMING_DAYS} days.
                 </p>
               </div>
             ) : (
-              <div className="bg-white border border-slate-100 rounded-xl divide-y divide-slate-50 overflow-hidden shadow-xs">
+              <div className="bg-card border border-border rounded-xl divide-y divide-border/50 overflow-hidden shadow-xs">
                 {upcomingTasks.map((task) => (
                   <Link
                     key={task.id}
                     href="/tasks"
-                    className="flex items-start gap-3 p-4 hover:bg-slate-50/50 transition-colors group"
+                    className="flex items-start gap-3 p-4 hover:bg-muted/50 transition-colors group"
                   >
                     <button
                       onClick={(e) => {
@@ -387,27 +387,27 @@ export default function Home() {
                         e.stopPropagation();
                         toggleStatus(task);
                       }}
-                      className="text-slate-300 hover:text-primary transition-colors mt-0.5 shrink-0"
+                      className="text-muted-foreground/60 hover:text-primary transition-colors mt-0.5 shrink-0"
                     >
                       <Square className="h-5 w-5" />
                     </button>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-700 leading-normal break-words">
+                      <p className="text-sm font-semibold text-foreground/90 leading-normal break-words">
                         {task.title}
                       </p>
                       <div className="flex flex-wrap items-center gap-2 mt-1.5">
                         <span
                           className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded ${
                             task.due_date === todayStr
-                              ? "bg-amber-50 text-amber-600"
-                              : "bg-slate-50 text-slate-500"
+                              ? "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400"
+                              : "bg-muted text-muted-foreground"
                           }`}
                         >
                           <Clock className="h-3 w-3" />
                           {dueDateLabel(task.due_date)}
                         </span>
                         {task.goals?.title && (
-                          <span className="inline-block text-[10px] text-slate-500 font-semibold bg-slate-100 px-1.5 py-0.5 rounded truncate max-w-[150px]">
+                          <span className="inline-block text-[10px] text-muted-foreground font-semibold bg-muted px-1.5 py-0.5 rounded truncate max-w-[150px]">
                             {task.goals.title}
                           </span>
                         )}
@@ -425,13 +425,13 @@ export default function Home() {
           {/* UPCOMING SCHEDULE */}
           <section className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                <CalendarDays className="h-4 w-4 shrink-0 text-slate-400" />
+              <h2 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                <CalendarDays className="h-4 w-4 shrink-0 text-muted-foreground" />
                 Upcoming Schedule
               </h2>
               <Link
                 href="/schedules"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-primary transition-colors shrink-0"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors shrink-0"
               >
                 View all
                 <ArrowRight className="h-3 w-3" />
@@ -439,10 +439,10 @@ export default function Home() {
             </div>
 
             {upcomingSchedules.length === 0 ? (
-              <div className="flex flex-col items-center justify-center p-8 bg-slate-50/50 border border-dashed border-slate-200 rounded-xl text-center">
-                <CalendarDays className="h-6 w-6 text-slate-300 mb-2" />
-                <p className="text-sm font-medium text-slate-500">No events</p>
-                <p className="text-xs text-slate-400 mt-0.5">
+              <div className="flex flex-col items-center justify-center p-8 bg-muted/30 border border-dashed border-border rounded-xl text-center">
+                <CalendarDays className="h-6 w-6 text-muted-foreground/60 mb-2" />
+                <p className="text-sm font-medium text-muted-foreground">No events</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Nothing scheduled in the next {UPCOMING_DAYS} days.
                 </p>
               </div>
@@ -450,7 +450,7 @@ export default function Home() {
               <div className="space-y-5">
                 {Object.entries(schedulesByDay).map(([day, items]) => (
                   <div key={day} className="space-y-2">
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">
+                    <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">
                       {dueDateLabel(day)}
                     </p>
                     <div className="space-y-2">
@@ -466,16 +466,16 @@ export default function Home() {
                           <Link
                             key={s.id}
                             href="/schedules"
-                            className="p-3 bg-white border border-slate-100 rounded-xl shadow-xs flex flex-col gap-1 hover:border-slate-200 hover:shadow-sm transition-all"
+                            className="p-3 bg-card border border-border rounded-xl shadow-xs flex flex-col gap-1 hover:border-border/80 hover:shadow-sm transition-all"
                           >
-                            <span className="text-xs font-bold text-primary bg-primary/5 px-2 py-0.5 rounded self-start">
+                            <span className="text-xs font-bold text-primary bg-primary/5 dark:bg-primary/10 px-2 py-0.5 rounded self-start">
                               {start}
                             </span>
-                            <p className="text-sm font-semibold text-slate-700 leading-tight">
+                            <p className="text-sm font-semibold text-foreground/90 leading-tight">
                               {s.title}
                             </p>
                             {s.tasks?.title && (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded self-start max-w-[180px] truncate">
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 px-1.5 py-0.5 rounded self-start max-w-[180px] truncate">
                                 <CheckSquare className="h-2.5 w-2.5 shrink-0" />
                                 {s.tasks.title}
                               </span>
@@ -493,13 +493,13 @@ export default function Home() {
           {/* RELEVANT NOTES */}
           <section className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                <FileText className="h-4 w-4 shrink-0 text-slate-400" />
+              <h2 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
                 Relevant Notes
               </h2>
               <Link
                 href="/notes"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-primary transition-colors shrink-0"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors shrink-0"
               >
                 View all
                 <ArrowRight className="h-3 w-3" />
@@ -507,12 +507,12 @@ export default function Home() {
             </div>
 
             {relevantNotes.length === 0 ? (
-              <div className="flex flex-col items-center justify-center p-8 bg-slate-50/50 border border-dashed border-slate-200 rounded-xl text-center">
-                <FileText className="h-6 w-6 text-slate-300 mb-2" />
-                <p className="text-sm font-medium text-slate-500">
+              <div className="flex flex-col items-center justify-center p-8 bg-muted/30 border border-dashed border-border rounded-xl text-center">
+                <FileText className="h-6 w-6 text-muted-foreground/60 mb-2" />
+                <p className="text-sm font-medium text-muted-foreground">
                   No relevant notes
                 </p>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Notes linked to tasks/goals or recently updated will show
                   here.
                 </p>
@@ -523,22 +523,22 @@ export default function Home() {
                   <Link
                     key={note.id}
                     href="/notes"
-                    className="block p-3 bg-white border border-slate-100 rounded-xl shadow-xs hover:border-slate-200 hover:shadow-sm transition-all"
+                    className="block p-3 bg-card border border-border rounded-xl shadow-xs hover:border-border/80 hover:shadow-sm transition-all"
                   >
-                    <p className="text-sm font-medium text-slate-700 leading-snug line-clamp-3 whitespace-pre-wrap break-words">
+                    <p className="text-sm font-medium text-foreground/90 leading-snug line-clamp-3 whitespace-pre-wrap break-words">
                       {note.content}
                     </p>
                     {note.labels.length > 0 && (
                       <div className="flex flex-wrap items-center gap-1.5 mt-2">
                         {note.labels.map((l, i) => (
                           <span
-                            key={i}
-                            className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded max-w-[150px] truncate ${
-                              l.type === "task"
-                                ? "bg-blue-50 text-blue-600"
-                                : "bg-amber-50 text-amber-600"
-                            }`}
-                          >
+                              key={i}
+                              className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded max-w-[150px] truncate ${
+                                l.type === "task"
+                                  ? "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400"
+                                  : "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400"
+                              }`}
+                            >
                             {l.type === "task" ? (
                               <CheckSquare className="h-2.5 w-2.5 shrink-0" />
                             ) : (
@@ -563,19 +563,19 @@ export default function Home() {
 function DashboardSkeleton() {
   return (
     <div className="space-y-8 animate-pulse max-w-5xl">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border/50 pb-6">
         <div>
-          <div className="h-8 w-64 bg-slate-200 rounded-lg" />
-          <div className="h-4 w-40 bg-slate-100 rounded-md mt-2" />
+          <div className="h-8 w-64 bg-muted rounded-lg" />
+          <div className="h-4 w-40 bg-muted/65 rounded-md mt-2" />
         </div>
-        <div className="h-8 w-28 bg-slate-100 rounded-lg" />
+        <div className="h-8 w-28 bg-muted/60 rounded-lg" />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="h-16 bg-slate-100 rounded-xl border border-slate-100"
+            className="h-16 bg-muted/40 rounded-xl border border-border/50"
           />
         ))}
       </div>
@@ -583,22 +583,22 @@ function DashboardSkeleton() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           <div className="space-y-4">
-            <div className="h-6 w-32 bg-slate-200 rounded-md" />
-            <div className="h-20 bg-slate-100 rounded-xl" />
+            <div className="h-6 w-32 bg-muted rounded-md" />
+            <div className="h-20 bg-muted/50 rounded-xl animate-pulse" />
           </div>
           <div className="space-y-4">
-            <div className="h-6 w-32 bg-slate-200 rounded-md" />
-            <div className="h-24 bg-slate-100 rounded-xl" />
+            <div className="h-6 w-32 bg-muted rounded-md" />
+            <div className="h-24 bg-muted/50 rounded-xl animate-pulse" />
           </div>
         </div>
         <div className="space-y-8">
           <div className="space-y-4">
-            <div className="h-6 w-32 bg-slate-200 rounded-md" />
-            <div className="h-32 bg-slate-100 rounded-xl" />
+            <div className="h-6 w-32 bg-muted rounded-md" />
+            <div className="h-32 bg-muted/50 rounded-xl animate-pulse" />
           </div>
           <div className="space-y-4">
-            <div className="h-6 w-32 bg-slate-200 rounded-md" />
-            <div className="h-32 bg-slate-100 rounded-xl" />
+            <div className="h-6 w-32 bg-muted rounded-md" />
+            <div className="h-32 bg-muted/50 rounded-xl animate-pulse" />
           </div>
         </div>
       </div>

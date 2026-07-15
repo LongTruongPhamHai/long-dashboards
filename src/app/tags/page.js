@@ -110,13 +110,13 @@ export default function TagsPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       {/* HEADER */}
-      <div className="border-b border-slate-100 pb-6 flex items-center justify-between">
+      <div className="border-b border-border pb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
             <Tag className="h-6 w-6 text-primary" />
             Tags
           </h1>
-          <p className="text-slate-500 text-sm font-medium mt-1">
+          <p className="text-muted-foreground text-sm font-medium mt-1">
             Label tasks to organize and filter them dynamically
           </p>
         </div>
@@ -126,16 +126,16 @@ export default function TagsPage() {
       </div>
 
       {/* FORM THÊM/SỬA TAG */}
-      <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
+      <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+          <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">
             {editingId ? "Edit Tag" : "New Tag"}
           </h3>
           {editingId && (
             <button
               type="button"
               onClick={resetForm}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-slate-600"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground"
             >
               <X className="h-3.5 w-3.5" />
               Cancel
@@ -147,7 +147,7 @@ export default function TagsPage() {
           className="flex flex-col sm:flex-row gap-3 items-end sm:items-center"
         >
           <div className="flex-1 w-full flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-500">
+            <label className="text-xs font-semibold text-muted-foreground">
               Tag Name
             </label>
             <input
@@ -155,17 +155,17 @@ export default function TagsPage() {
               placeholder="e.g. Urgent, In Progress, Review..."
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50/30"
+              className="w-full px-4 py-2 rounded-lg border border-border text-sm font-medium placeholder:text-muted-foreground/60 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-muted/20"
               required
             />
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto pt-2 sm:pt-0 shrink-0">
             <div className="flex flex-col gap-1.5 shrink-0">
-              <label className="text-xs font-semibold text-slate-500">
+              <label className="text-xs font-semibold text-muted-foreground">
                 Color
               </label>
-              <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shrink-0">
+              <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-border shrink-0">
                 <input
                   type="color"
                   value={color}
@@ -206,7 +206,7 @@ export default function TagsPage() {
                 placeholder="Search tags..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 placeholder:text-slate-400 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-border text-xs font-semibold text-foreground/70 placeholder:text-muted-foreground/60 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-card"
               />
             </div>
             <div className="flex items-center gap-2 shrink-0">
@@ -214,7 +214,7 @@ export default function TagsPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="text-xs font-semibold text-foreground/70 bg-card border border-border rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               >
                 <option value="name_asc">Name (A-Z)</option>
                 <option value="name_desc">Name (Z-A)</option>
@@ -224,20 +224,20 @@ export default function TagsPage() {
         )}
 
         {tags.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+          <div className="flex flex-col items-center justify-center p-12 bg-muted/30 border border-dashed border-border rounded-2xl text-center">
             <Inbox className="h-8 w-8 text-slate-300 mb-3" />
-            <p className="text-sm font-bold text-slate-600">No tags yet</p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-sm font-bold text-foreground/70">No tags yet</p>
+            <p className="text-xs text-muted-foreground mt-1">
               Create tags to easily prioritize or flag special task statuses.
             </p>
           </div>
         ) : sortedTags.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+          <div className="flex flex-col items-center justify-center p-12 bg-muted/30 border border-dashed border-border rounded-2xl text-center">
             <Search className="h-8 w-8 text-slate-300 mb-3" />
-            <p className="text-sm font-bold text-slate-600">
+            <p className="text-sm font-bold text-foreground/70">
               No tags match &ldquo;{searchQuery}&rdquo;
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Try a different search term.
             </p>
           </div>
@@ -246,7 +246,7 @@ export default function TagsPage() {
             {sortedTags.map((t) => (
               <div
                 key={t.id}
-                className={`group bg-white border rounded-lg px-3 py-2 flex items-center justify-between hover:border-slate-200 hover:shadow-xs transition-all ${
+                className={`group bg-card border rounded-lg px-3 py-2 flex items-center justify-between hover:border-border hover:shadow-xs transition-all ${
                   editingId === t.id
                     ? "border-primary/40 ring-2 ring-primary/10"
                     : "border-slate-100"
@@ -292,19 +292,19 @@ export default function TagsPage() {
 function TagsSkeleton() {
   return (
     <div className="space-y-8 animate-pulse max-w-5xl">
-      <div className="border-b border-slate-100 pb-6 flex items-center justify-between">
+      <div className="border-b border-border pb-6 flex items-center justify-between">
         <div>
-          <div className="h-8 w-48 bg-slate-200 rounded-lg" />
-          <div className="h-4 w-64 bg-slate-100 rounded-md mt-2" />
+          <div className="h-8 w-48 bg-muted rounded-lg" />
+          <div className="h-4 w-64 bg-muted/50 rounded-md mt-2" />
         </div>
-        <div className="h-6 w-20 bg-slate-100 rounded-full" />
+        <div className="h-6 w-20 bg-muted/50 rounded-full" />
       </div>
 
-      <div className="bg-white border border-slate-100 rounded-xl p-5 space-y-4">
+      <div className="bg-card border border-border rounded-xl p-5 space-y-4">
         <div className="h-5 w-24 bg-slate-200 rounded-md" />
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 h-10 bg-slate-100 rounded-lg" />
-          <div className="h-10 w-24 bg-slate-100 rounded-lg" />
+          <div className="flex-1 h-10 bg-muted/50 rounded-lg" />
+          <div className="h-10 w-24 bg-muted/50 rounded-lg" />
         </div>
       </div>
 
@@ -312,10 +312,10 @@ function TagsSkeleton() {
         {[1, 2, 3, 4, 5].map((i) => (
           <div
             key={i}
-            className="p-3 bg-white border border-slate-100 rounded-xl flex items-center gap-2"
+            className="p-3 bg-card border border-border rounded-xl flex items-center gap-2"
           >
-            <div className="w-2.5 h-2.5 rounded-full bg-slate-200 shrink-0" />
-            <div className="h-3.5 w-2/3 bg-slate-200 rounded-md" />
+            <div className="w-2.5 h-2.5 rounded-full bg-muted shrink-0" />
+            <div className="h-3.5 w-2/3 bg-muted rounded-md" />
           </div>
         ))}
       </div>

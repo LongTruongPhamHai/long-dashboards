@@ -214,13 +214,13 @@ export default function NotesPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       {/* HEADER */}
-      <div className="border-b border-slate-100 pb-6 flex items-center justify-between">
+      <div className="border-b border-border pb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
             <FileText className="h-6 w-6 text-primary" />
             Notes
           </h1>
-          <p className="text-slate-500 text-sm font-medium mt-1">
+          <p className="text-muted-foreground text-sm font-medium mt-1">
             Capture thoughts, store simple wikis, and link them to tasks or
             goals
           </p>
@@ -231,16 +231,16 @@ export default function NotesPage() {
       </div>
 
       {/* FORM THÊM/SỬA NOTE */}
-      <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
+      <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+          <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">
             {editingId ? "Edit Note" : "New Note"}
           </h3>
           {editingId && (
             <button
               type="button"
               onClick={resetForm}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-slate-600"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground"
             >
               <X className="h-3.5 w-3.5" />
               Cancel
@@ -253,7 +253,7 @@ export default function NotesPage() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={4}
-            className="w-full px-4 py-3 rounded-lg border border-slate-200 text-sm font-medium placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50/30 resize-y"
+            className="w-full px-4 py-3 rounded-lg border border-border text-sm font-medium placeholder:text-muted-foreground/60 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-muted/20 resize-y"
             required
           />
 
@@ -261,7 +261,7 @@ export default function NotesPage() {
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
               {/* LINK TYPE */}
               <div className="flex flex-col gap-1 w-full sm:w-44">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">
+                <label className="text-[10px] font-bold text-muted-foreground/70 uppercase">
                   Link to
                 </label>
                 <select
@@ -270,7 +270,7 @@ export default function NotesPage() {
                     setLinkType(e.target.value);
                     setLinkId("");
                   }}
-                  className="px-3 py-2 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 focus:outline-hidden"
+                  className="px-3 py-2 rounded-lg border border-border bg-card text-xs font-semibold text-foreground/70 focus:outline-hidden"
                 >
                   <option value="">-- No Link --</option>
                   <option value="task">Link to Task</option>
@@ -281,13 +281,13 @@ export default function NotesPage() {
               {/* LINK ID FOR TASK */}
               {linkType === "task" && (
                 <div className="flex flex-col gap-1 w-full sm:w-60">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase">
+                  <label className="text-[10px] font-bold text-muted-foreground/70 uppercase">
                     Select Task
                   </label>
                   <select
                     value={linkId}
                     onChange={(e) => setLinkId(e.target.value)}
-                    className="px-3 py-2 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 focus:outline-hidden truncate"
+                    className="px-3 py-2 rounded-lg border border-border bg-card text-xs font-semibold text-foreground/70 focus:outline-hidden truncate"
                   >
                     <option value="">-- Select Task --</option>
                     {tasks.map((t) => (
@@ -302,13 +302,13 @@ export default function NotesPage() {
               {/* LINK ID FOR GOAL */}
               {linkType === "goal" && (
                 <div className="flex flex-col gap-1 w-full sm:w-60">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase">
+                  <label className="text-[10px] font-bold text-muted-foreground/70 uppercase">
                     Select Goal
                   </label>
                   <select
                     value={linkId}
                     onChange={(e) => setLinkId(e.target.value)}
-                    className="px-3 py-2 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 focus:outline-hidden truncate"
+                    className="px-3 py-2 rounded-lg border border-border bg-card text-xs font-semibold text-foreground/70 focus:outline-hidden truncate"
                   >
                     <option value="">-- Select Goal --</option>
                     {goals.map((g) => (
@@ -346,21 +346,21 @@ export default function NotesPage() {
         {notes.length > 0 && (
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <div className="relative flex-1 sm:max-w-xs">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/70 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search notes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 placeholder:text-slate-400 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-border text-xs font-semibold text-foreground/70 placeholder:text-muted-foreground/60 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-card"
               />
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground/70 shrink-0" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="text-xs font-semibold text-foreground/70 bg-card border border-border rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               >
                 <option value="created_desc">Newest first</option>
                 <option value="created_asc">Oldest first</option>
@@ -371,20 +371,20 @@ export default function NotesPage() {
         )}
 
         {notes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+          <div className="flex flex-col items-center justify-center p-12 bg-muted/30 border border-dashed border-border rounded-2xl text-center">
             <Inbox className="h-8 w-8 text-slate-300 mb-3" />
-            <p className="text-sm font-bold text-slate-600">No notes yet</p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-sm font-bold text-foreground/70">No notes yet</p>
+            <p className="text-xs text-muted-foreground mt-1">
               Start capturing notes, ideas or snippets!
             </p>
           </div>
         ) : sortedNotes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+          <div className="flex flex-col items-center justify-center p-12 bg-muted/30 border border-dashed border-border rounded-2xl text-center">
             <Search className="h-8 w-8 text-slate-300 mb-3" />
-            <p className="text-sm font-bold text-slate-600">
+            <p className="text-sm font-bold text-foreground/70">
               No notes match &ldquo;{searchQuery}&rdquo;
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Try a different search term.
             </p>
           </div>
@@ -405,19 +405,19 @@ export default function NotesPage() {
               return (
                 <div
                   key={note.id}
-                  className={`group bg-white border rounded-xl p-5 hover:border-slate-200 hover:shadow-xs transition-all flex flex-col justify-between gap-4 ${
+                  className={`group bg-card border rounded-xl p-5 hover:border-border hover:shadow-xs transition-all flex flex-col justify-between gap-4 ${
                     editingId === note.id
                       ? "border-primary/40 ring-2 ring-primary/10"
                       : "border-slate-100"
                   }`}
                 >
-                  <p className="text-sm font-medium text-slate-700 leading-relaxed whitespace-pre-wrap break-words">
+                  <p className="text-sm font-medium text-foreground/80 leading-relaxed whitespace-pre-wrap break-words">
                     {note.content}
                   </p>
 
-                  <div className="border-t border-slate-50 pt-3 flex flex-wrap items-center justify-between gap-3">
+                  <div className="border-t border-border/50 pt-3 flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-400">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-muted-foreground/70">
                         <Calendar className="h-3 w-3" />
                         {formattedDate}
                       </span>
@@ -479,20 +479,20 @@ export default function NotesPage() {
 function NotesSkeleton() {
   return (
     <div className="space-y-8 animate-pulse max-w-5xl">
-      <div className="border-b border-slate-100 pb-6 flex items-center justify-between">
+      <div className="border-b border-border pb-6 flex items-center justify-between">
         <div>
-          <div className="h-8 w-48 bg-slate-200 rounded-lg" />
-          <div className="h-4 w-64 bg-slate-100 rounded-md mt-2" />
+          <div className="h-8 w-48 bg-muted rounded-lg" />
+          <div className="h-4 w-64 bg-muted/50 rounded-md mt-2" />
         </div>
-        <div className="h-6 w-20 bg-slate-100 rounded-full" />
+        <div className="h-6 w-20 bg-muted/50 rounded-full" />
       </div>
 
-      <div className="bg-white border border-slate-100 rounded-xl p-5 space-y-4">
-        <div className="h-5 w-24 bg-slate-200 rounded-md" />
-        <div className="h-24 bg-slate-100 rounded-lg" />
+      <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+        <div className="h-5 w-24 bg-muted rounded-md" />
+        <div className="h-24 bg-muted/50 rounded-lg" />
         <div className="flex justify-between items-center">
-          <div className="h-8 w-40 bg-slate-100 rounded-lg" />
-          <div className="h-8 w-28 bg-slate-200 rounded-lg" />
+          <div className="h-8 w-40 bg-muted/50 rounded-lg" />
+          <div className="h-8 w-28 bg-muted rounded-lg" />
         </div>
       </div>
 
@@ -500,15 +500,15 @@ function NotesSkeleton() {
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="bg-white border border-slate-100 rounded-xl p-5 space-y-4"
+            className="bg-card border border-border rounded-xl p-5 space-y-4"
           >
             <div className="space-y-2">
-              <div className="h-4 w-full bg-slate-200 rounded-md" />
-              <div className="h-4 w-5/6 bg-slate-200 rounded-md" />
+              <div className="h-4 w-full bg-muted rounded-md" />
+              <div className="h-4 w-5/6 bg-muted rounded-md" />
             </div>
-            <div className="border-t border-slate-50 pt-3 flex justify-between items-center">
-              <div className="h-3.5 w-24 bg-slate-100 rounded-md" />
-              <div className="h-5 w-5 bg-slate-100 rounded-md" />
+            <div className="border-t border-border/50 pt-3 flex justify-between items-center">
+              <div className="h-3.5 w-24 bg-muted/50 rounded-md" />
+              <div className="h-5 w-5 bg-muted/50 rounded-md" />
             </div>
           </div>
         ))}

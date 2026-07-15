@@ -274,13 +274,13 @@ export default function TasksPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       {/* HEADER */}
-      <div className="border-b border-slate-100 pb-6 flex items-center justify-between">
+      <div className="border-b border-border pb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
             <CheckSquare className="h-6 w-6 text-primary" />
             Tasks List
           </h1>
-          <p className="text-slate-500 text-sm font-medium mt-1">
+          <p className="text-muted-foreground text-sm font-medium mt-1">
             Manage, organize and track your daily tasks
           </p>
         </div>
@@ -290,16 +290,16 @@ export default function TasksPage() {
       </div>
 
       {/* FORM THÊM/SỬA TASK */}
-      <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
+      <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+          <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">
             {editingId ? "Edit Task" : "New Task"}
           </h3>
           {editingId && (
             <button
               type="button"
               onClick={resetForm}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-slate-600"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground"
             >
               <X className="h-3.5 w-3.5" />
               Cancel
@@ -313,27 +313,27 @@ export default function TasksPage() {
               placeholder="Enter task title..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="flex-1 px-4 py-2.5 rounded-lg border border-slate-200 text-sm font-medium placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50/30"
+              className="flex-1 px-4 py-2.5 rounded-lg border border-border text-sm font-medium placeholder:text-muted-foreground/60 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-muted/20"
               required
             />
             <input
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50/30 md:w-48"
+              className="px-4 py-2.5 rounded-lg border border-border text-sm font-medium text-foreground/70 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-muted/20 md:w-48"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* GOAL SELECT */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">
+              <label className="text-xs font-semibold text-muted-foreground">
                 Linked Goal
               </label>
               <select
                 value={goalId}
                 onChange={(e) => setGoalId(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-600 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-card text-sm font-medium text-foreground/70 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               >
                 <option value="">-- No Goal --</option>
                 {goals.map((g) => (
@@ -346,13 +346,13 @@ export default function TasksPage() {
 
             {/* CATEGORY SELECT */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">
+              <label className="text-xs font-semibold text-muted-foreground">
                 Category
               </label>
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-600 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full px-3 py-2.5 rounded-lg border border-border bg-card text-sm font-medium text-foreground/70 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               >
                 <option value="">-- Uncategorized --</option>
                 {categories.map((c) => (
@@ -366,8 +366,8 @@ export default function TasksPage() {
 
           {/* TAGS MULTI-SELECT (RENDER DẠNG BADGES ĐỂ CHỌN NHANH) */}
           {tags.length > 0 && (
-            <div className="flex flex-col gap-2 border-t border-slate-50 pt-3">
-              <label className="text-xs font-semibold text-slate-500">
+            <div className="flex flex-col gap-2 border-t border-border/50 pt-3">
+              <label className="text-xs font-semibold text-muted-foreground">
                 Select Tags
               </label>
               <div className="flex flex-wrap gap-2">
@@ -381,7 +381,7 @@ export default function TasksPage() {
                       className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
                         isSelected
                           ? "bg-primary text-white border-primary"
-                          : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50/80"
+                          : "bg-card text-foreground/70 border-border hover:bg-muted/50"
                       }`}
                       style={{
                         borderColor: isSelected ? undefined : t.color,
@@ -428,21 +428,21 @@ export default function TasksPage() {
         {tasks.length > 0 && (
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <div className="relative flex-1 sm:max-w-xs">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/70 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search tasks..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 placeholder:text-slate-400 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-border text-xs font-semibold text-foreground/70 placeholder:text-muted-foreground/60 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-card"
               />
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground/70 shrink-0" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="text-xs font-semibold text-foreground/70 bg-card border border-border rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               >
                 <option value="created_desc">Newest created</option>
                 <option value="due_asc">Due date (soonest)</option>
@@ -455,25 +455,25 @@ export default function TasksPage() {
         )}
 
         {tasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+          <div className="flex flex-col items-center justify-center p-12 bg-muted/30 border border-dashed border-border rounded-2xl text-center">
             <Inbox className="h-8 w-8 text-slate-300 mb-3" />
-            <p className="text-sm font-bold text-slate-600">Inbox is empty</p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-sm font-bold text-foreground/70">Inbox is empty</p>
+            <p className="text-xs text-muted-foreground mt-1">
               No tasks yet. Create your first task using the form above!
             </p>
           </div>
         ) : sortedTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+          <div className="flex flex-col items-center justify-center p-12 bg-muted/30 border border-dashed border-border rounded-2xl text-center">
             <Search className="h-8 w-8 text-slate-300 mb-3" />
-            <p className="text-sm font-bold text-slate-600">
+            <p className="text-sm font-bold text-foreground/70">
               No tasks match &ldquo;{searchQuery}&rdquo;
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Try a different search term.
             </p>
           </div>
         ) : (
-          <div className="bg-white border border-slate-100 rounded-xl divide-y divide-slate-50 overflow-hidden shadow-xs">
+          <div className="bg-card border border-border rounded-xl divide-y divide-border/30 overflow-hidden shadow-xs">
             {sortedTasks.map((task) => {
               const isCompleted = task.status === "done";
               const isOverdue =
@@ -487,7 +487,7 @@ export default function TasksPage() {
               return (
                 <div
                   key={task.id}
-                  className={`flex items-start gap-4 p-4 hover:bg-slate-50/50 transition-colors group ${
+                  className={`flex items-start gap-4 p-4 hover:bg-muted/30 transition-colors group ${
                     editingId === task.id ? "bg-primary/5" : ""
                   }`}
                 >
@@ -513,8 +513,8 @@ export default function TasksPage() {
                       onClick={() => toggleStatus(task)}
                       className={`text-sm font-semibold leading-normal break-words cursor-pointer transition-all ${
                         isCompleted
-                          ? "line-through text-slate-400 font-medium"
-                          : "text-slate-800"
+                          ? "line-through text-muted-foreground/60 font-medium"
+                          : "text-foreground"
                       }`}
                     >
                       {task.title}
@@ -527,12 +527,12 @@ export default function TasksPage() {
                         <span
                           className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded leading-none ${
                             isCompleted
-                              ? "bg-slate-100 text-slate-400"
+                              ? "bg-muted text-muted-foreground/60"
                               : isOverdue
                                 ? "bg-rose-50 text-rose-600"
                                 : isDueToday
                                   ? "bg-amber-50 text-amber-600"
-                                  : "bg-slate-50 text-slate-500"
+                                  : "bg-muted/50 text-muted-foreground"
                           }`}
                         >
                           <Calendar className="h-3 w-3" />
@@ -542,7 +542,7 @@ export default function TasksPage() {
 
                       {/* Goal Link */}
                       {task.goals?.title && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-slate-50 text-slate-500 border border-slate-100 px-1.5 py-0.5 rounded leading-none max-w-[150px] truncate">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-muted/50 text-muted-foreground border border-border/50 px-1.5 py-0.5 rounded leading-none max-w-[150px] truncate">
                           <Target className="h-3 w-3 text-slate-400 shrink-0" />
                           {task.goals.title}
                         </span>
@@ -550,7 +550,7 @@ export default function TasksPage() {
 
                       {/* Category Link */}
                       {matchedCategory && (
-                        <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold bg-slate-50 text-slate-500 border border-slate-100 px-1.5 py-0.5 rounded leading-none">
+                        <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold bg-muted/50 text-muted-foreground border border-border/50 px-1.5 py-0.5 rounded leading-none">
                           <span
                             className="w-1.5 h-1.5 rounded-full"
                             style={{ backgroundColor: matchedCategory.color }}
@@ -590,27 +590,27 @@ export default function TasksPage() {
 function TasksSkeleton() {
   return (
     <div className="space-y-8 animate-pulse max-w-5xl">
-      <div className="border-b border-slate-100 pb-6 flex items-center justify-between">
+      <div className="border-b border-border pb-6 flex items-center justify-between">
         <div>
-          <div className="h-8 w-48 bg-slate-200 rounded-lg" />
-          <div className="h-4 w-64 bg-slate-100 rounded-md mt-2" />
+          <div className="h-8 w-48 bg-muted rounded-lg" />
+          <div className="h-4 w-64 bg-muted/50 rounded-md mt-2" />
         </div>
-        <div className="h-6 w-20 bg-slate-100 rounded-full" />
+        <div className="h-6 w-20 bg-muted/50 rounded-full" />
       </div>
 
-      <div className="bg-white border border-slate-100 rounded-xl p-5 space-y-4">
-        <div className="h-5 w-24 bg-slate-200 rounded-md" />
-        <div className="h-10 bg-slate-100 rounded-lg" />
-        <div className="h-16 bg-slate-50 rounded-lg" />
+      <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+        <div className="h-5 w-24 bg-muted rounded-md" />
+        <div className="h-10 bg-muted/50 rounded-lg" />
+        <div className="h-16 bg-muted/30 rounded-lg" />
       </div>
 
-      <div className="bg-white border border-slate-100 rounded-xl divide-y divide-slate-50">
+      <div className="bg-card border border-border rounded-xl divide-y divide-border/30">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="p-4 flex items-center gap-4">
-            <div className="h-5 w-5 bg-slate-200 rounded-md shrink-0" />
+            <div className="h-5 w-5 bg-muted rounded-md shrink-0" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 w-3/4 bg-slate-200 rounded-md" />
-              <div className="h-3 w-1/4 bg-slate-100 rounded-md" />
+              <div className="h-4 w-3/4 bg-muted rounded-md" />
+              <div className="h-3 w-1/4 bg-muted/50 rounded-md" />
             </div>
           </div>
         ))}

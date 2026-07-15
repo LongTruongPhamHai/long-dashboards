@@ -215,7 +215,7 @@ export default function GoalsPage() {
         }}
       >
         <div
-          className={`group relative bg-white border rounded-xl p-4 hover:border-slate-200 transition-all shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+          className={`group relative bg-card border rounded-xl p-4 hover:border-border transition-all shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 ${
             editingId === goal.id
               ? "border-primary/40 ring-2 ring-primary/10"
               : "border-slate-100"
@@ -231,14 +231,14 @@ export default function GoalsPage() {
               <span className="p-1 rounded-md bg-primary/5 text-primary">
                 <Milestone className="h-4 w-4 shrink-0" />
               </span>
-              <h3 className="font-semibold text-slate-800 text-sm md:text-base leading-snug truncate">
+              <h3 className="font-semibold text-foreground text-sm md:text-base leading-snug truncate">
                 {goal.title}
               </h3>
             </div>
 
             {/* PROGRESS BAR */}
             <div className="mt-3 max-w-md">
-              <div className="flex justify-between items-center text-xs font-semibold text-slate-500 mb-1">
+              <div className="flex justify-between items-center text-xs font-semibold text-muted-foreground mb-1">
                 <span>Progress</span>
                 <span
                   className={
@@ -250,7 +250,7 @@ export default function GoalsPage() {
                   {percent}% ({c?.done || 0}/{c?.total || 0} tasks)
                 </span>
               </div>
-              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-500 ${
                     percent === 100 ? "bg-emerald-500" : "bg-primary"
@@ -296,13 +296,13 @@ export default function GoalsPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       {/* HEADER */}
-      <div className="border-b border-slate-100 pb-6 flex items-center justify-between">
+      <div className="border-b border-border pb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
             <Target className="h-6 w-6 text-primary" />
             Goals
           </h1>
-          <p className="text-slate-500 text-sm font-medium mt-1">
+          <p className="text-muted-foreground text-sm font-medium mt-1">
             Set long-term milestones and track your tasks completion progress
           </p>
         </div>
@@ -312,16 +312,16 @@ export default function GoalsPage() {
       </div>
 
       {/* FORM THÊM/SỬA GOAL */}
-      <div className="bg-white border border-slate-100 rounded-xl p-5 shadow-xs">
+      <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+          <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">
             {editingId ? "Edit Goal" : "New Goal"}
           </h3>
           {editingId && (
             <button
               type="button"
               onClick={resetForm}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-slate-600"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground"
             >
               <X className="h-3.5 w-3.5" />
               Cancel
@@ -331,7 +331,7 @@ export default function GoalsPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
             <div className="md:col-span-2 flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">
+              <label className="text-xs font-semibold text-muted-foreground">
                 Goal Title
               </label>
               <input
@@ -339,18 +339,18 @@ export default function GoalsPage() {
                 placeholder="Enter goal name..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50/30"
+                className="w-full px-4 py-2 rounded-lg border border-border text-sm font-medium placeholder:text-muted-foreground/60 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-muted/20"
                 required
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-500">
+              <label className="text-xs font-semibold text-muted-foreground">
                 Parent Goal (Optional)
               </label>
               <select
                 value={parentGoalId}
                 onChange={(e) => setParentGoalId(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-600 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-card text-sm font-medium text-foreground/70 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               >
                 <option value="">-- No Parent Goal --</option>
                 {goals
@@ -390,21 +390,21 @@ export default function GoalsPage() {
         {goals.length > 0 && (
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <div className="relative flex-1 sm:max-w-xs">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/70 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search goals..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 placeholder:text-slate-400 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-border text-xs font-semibold text-foreground/70 placeholder:text-muted-foreground/60 placeholder:font-medium focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-card"
               />
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground/70 shrink-0" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="text-xs font-semibold text-foreground/70 bg-card border border-border rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               >
                 <option value="created_asc">Created (Oldest first)</option>
                 <option value="created_desc">Created (Newest first)</option>
@@ -416,20 +416,20 @@ export default function GoalsPage() {
         )}
 
         {goals.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+          <div className="flex flex-col items-center justify-center p-12 bg-muted/30 border border-dashed border-border rounded-2xl text-center">
             <Inbox className="h-8 w-8 text-slate-300 mb-3" />
-            <p className="text-sm font-bold text-slate-600">No goals yet</p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-sm font-bold text-foreground/70">No goals yet</p>
+            <p className="text-xs text-muted-foreground mt-1">
               Set your first milestone to start planning effectively!
             </p>
           </div>
         ) : rootGoals.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
+          <div className="flex flex-col items-center justify-center p-12 bg-muted/30 border border-dashed border-border rounded-2xl text-center">
             <Search className="h-8 w-8 text-slate-300 mb-3" />
-            <p className="text-sm font-bold text-slate-600">
+            <p className="text-sm font-bold text-foreground/70">
               No goals match &ldquo;{searchQuery}&rdquo;
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Try a different search term.
             </p>
           </div>
@@ -446,19 +446,19 @@ export default function GoalsPage() {
 function GoalsSkeleton() {
   return (
     <div className="space-y-8 animate-pulse max-w-5xl">
-      <div className="border-b border-slate-100 pb-6 flex items-center justify-between">
+      <div className="border-b border-border pb-6 flex items-center justify-between">
         <div>
-          <div className="h-8 w-48 bg-slate-200 rounded-lg" />
-          <div className="h-4 w-64 bg-slate-100 rounded-md mt-2" />
+          <div className="h-8 w-48 bg-muted rounded-lg" />
+          <div className="h-4 w-64 bg-muted/50 rounded-md mt-2" />
         </div>
-        <div className="h-6 w-20 bg-slate-100 rounded-full" />
+        <div className="h-6 w-20 bg-muted/50 rounded-full" />
       </div>
 
-      <div className="bg-white border border-slate-100 rounded-xl p-5 space-y-4">
+      <div className="bg-card border border-border rounded-xl p-5 space-y-4">
         <div className="h-5 w-24 bg-slate-200 rounded-md" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="md:col-span-2 h-10 bg-slate-100 rounded-lg" />
-          <div className="h-10 bg-slate-100 rounded-lg" />
+          <div className="md:col-span-2 h-10 bg-muted/50 rounded-lg" />
+          <div className="h-10 bg-muted/50 rounded-lg" />
         </div>
       </div>
 
@@ -466,15 +466,15 @@ function GoalsSkeleton() {
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="p-4 bg-white border border-slate-100 rounded-xl space-y-3"
+            className="p-4 bg-card border border-border rounded-xl space-y-3"
           >
             <div className="flex items-center gap-2">
-              <div className="h-6 w-6 bg-slate-200 rounded-md shrink-0" />
-              <div className="h-5 w-1/3 bg-slate-200 rounded-md" />
+              <div className="h-6 w-6 bg-muted rounded-md shrink-0" />
+              <div className="h-5 w-1/3 bg-muted rounded-md" />
             </div>
             <div className="max-w-md space-y-1.5">
-              <div className="h-3 w-16 bg-slate-100 rounded-sm" />
-              <div className="h-2 bg-slate-100 rounded-full" />
+              <div className="h-3 w-16 bg-muted/50 rounded-sm" />
+              <div className="h-2 bg-muted/50 rounded-full" />
             </div>
           </div>
         ))}
