@@ -17,6 +17,7 @@ export default function CategoriesPage() {
     const { data, error } = await supabase
       .from("categories")
       .select("*")
+      .is("deleted_at", null) // 👈 thêm dòng này
       .order("name");
     if (error) console.error(error);
     else setCategories(data || []);
@@ -45,7 +46,10 @@ export default function CategoriesPage() {
   };
 
   const handleDelete = async (id) => {
-    const { error } = await supabase.from("categories").delete().eq("id", id);
+    const { error } = await supabase
+      .from("categories")
+      .update({ deleted_at: new Date().toISOString() }) // 👈 đổi từ .delete() sang soft delete
+      .eq("id", id);
     if (error) console.error(error);
     else fetchCategories();
   };

@@ -180,3 +180,27 @@ create policy "user_owns_via_tag" on taggables for all
 -- habit_logs: kiểm tra qua bảng habits
 create policy "user_owns_via_habit" on habit_logs for all
   using (exists (select 1 from habits h where h.id = habit_logs.habit_id and h.user_id = auth.uid()));
+
+-- Chỉ 4 bảng này đang hard-delete thật, cần bổ sung deleted_at
+alter table categories add column if not exists deleted_at timestamptz;
+alter table tags add column if not exists deleted_at timestamptz;
+alter table notes add column if not exists deleted_at timestamptz;
+alter table schedules add column if not exists deleted_at timestamptz;
+
+create index if not exists idx_categories_deleted_at on categories(user_id, deleted_at);
+create index if not exists idx_tags_deleted_at on tags(user_id, deleted_at);
+create index if not exists idx_notes_deleted_at on notes(user_id, deleted_at);
+create index if not exists idx_schedules_deleted_at on schedules(user_id, deleted_at);
+
+-- goals, tasks, habits: đã có archived_at sẵn, tái sử dụng làm cơ chế Trash, không cần thêm cột
+
+-- (Tuỳ chọn) Tự động dọn rác sau 30 ngày, cần bật pg_cron trên Supabase trước
+select cron.schedule('purge_trash_daily', '0 3 * * *', $$
+  delete from categories where deleted_at is not null and deleted_at < now() - interval '30 days';
+  delete from tags where deleted_at is not null and deleted_at < now() - interval '30 days';
+  delete from notes where deleted_at is not null and deleted_at < now() - interval '30 days';
+  delete from schedules where deleted_at is not null and deleted_at < now() - interval '30 days';
+  delete from goals where archived_at is not null and archived_at < now() - interval '30 days';
+  delete from tasks where archived_at is not null and archived_at < now() - interval '30 days';
+  delete from habits where archived_at is not null and archived_at < now() - interval '30 days';
+$$);

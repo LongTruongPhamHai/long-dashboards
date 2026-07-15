@@ -17,6 +17,7 @@ export default function TagsPage() {
     const { data, error } = await supabase
       .from("tags")
       .select("*")
+      .is("deleted_at", null) // 👈 thêm
       .order("name");
     if (error) console.error(error);
     else setTags(data || []);
@@ -45,7 +46,10 @@ export default function TagsPage() {
   };
 
   const handleDelete = async (id) => {
-    const { error } = await supabase.from("tags").delete().eq("id", id);
+    const { error } = await supabase
+      .from("tags")
+      .update({ deleted_at: new Date().toISOString() }) // 👈 đổi
+      .eq("id", id);
     if (error) console.error(error);
     else fetchTags();
   };

@@ -14,6 +14,7 @@ import {
   Calendar,
   Folder,
   Tag,
+  Trash2, // 👈 thêm
   LogOut,
   Menu,
   X,
@@ -54,6 +55,7 @@ export default function LayoutWrapper({ children }) {
     { href: "/schedules", label: "Schedule", icon: Calendar },
     { href: "/categories", label: "Categories", icon: Folder },
     { href: "/tags", label: "Tags", icon: Tag },
+    { href: "/trash", label: "Trash", icon: Trash2 }, // 👈 thêm dòng này
   ];
 
   const mobileTabs = [

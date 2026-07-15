@@ -30,6 +30,7 @@ export default function SchedulesPage() {
     const { data, error } = await supabase
       .from("schedules")
       .select("*, tasks(title)")
+      .is("deleted_at", null) // 👈 thêm
       .order("start_time", { ascending: true });
 
     if (error) console.error(error);
@@ -94,7 +95,10 @@ export default function SchedulesPage() {
   });
 
   const handleDelete = async (id) => {
-    const { error } = await supabase.from("schedules").delete().eq("id", id);
+    const { error } = await supabase
+      .from("schedules")
+      .update({ deleted_at: new Date().toISOString() }) // 👈 đổi
+      .eq("id", id);
     if (error) console.error(error);
     else fetchSchedules();
   };

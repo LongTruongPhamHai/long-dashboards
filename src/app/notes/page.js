@@ -29,6 +29,7 @@ export default function NotesPage() {
     const { data, error } = await supabase
       .from("notes")
       .select("*, note_links(related_type, related_id)")
+      .is("deleted_at", null) // 👈 thêm
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -92,7 +93,10 @@ export default function NotesPage() {
   };
 
   const handleDelete = async (noteId) => {
-    const { error } = await supabase.from("notes").delete().eq("id", noteId);
+    const { error } = await supabase
+      .from("notes")
+      .update({ deleted_at: new Date().toISOString() }) // 👈 đổi
+      .eq("id", noteId);
     if (error) console.error(error);
     else fetchNotes();
   };
